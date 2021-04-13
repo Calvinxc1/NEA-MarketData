@@ -1,2 +1,2 @@
 # NEA-MarketData
-My EVE market analyzer app
+My Market Data analysis application
