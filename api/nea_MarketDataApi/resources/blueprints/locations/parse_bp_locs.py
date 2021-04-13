@@ -7,7 +7,7 @@ def parse_bp_locs(rows, locations, blueprints):
         location['blueprints'] = [row.to_dict() for _, row in location['blueprints'].reset_index().iterrows()]
         
         child_locations = locations.loc[locations['location_id'] == location['id']]
-        location['children'] = parse_blueprints(child_locations, locations, blueprints)
+        location['children'] = parse_bp_locs(child_locations, locations, blueprints)
         
         bp_locs.append(location)
         

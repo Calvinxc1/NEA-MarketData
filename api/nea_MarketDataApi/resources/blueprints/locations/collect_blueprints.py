@@ -1,8 +1,12 @@
+from pandas import DataFrame
+
+from nea_schema.maria.esi.corp import CorpBlueprint
+
 columns = ['item_id', 'type_id', 'type_name', 'material_efficiency', 'time_efficiency', 'quantity', 'runs', 'location_id', 'location_flag']
 
 def collect_blueprints(conn):
     query = conn.query(CorpBlueprint)
-    blueprints = pd.DataFrame([{
+    blueprints = DataFrame([{
         'item_id': row.item_id,
         'type_id': row.type_id,
         'type_name': row.type.type_name,
