@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+    app:
+        build:
+            context: ./app/
+            dockerfile: ./../app.Dockerfile
+        volumes:
+        - ./app/src:/srv/app/src
+        - ./app/public:/srv/app/public
+        - node_modules:/srv/app/node_modules
+        restart: unless-stopped
+        command: ["yarn", "start"]
+        
+    api:
+        build:
+            context: ./api/
+            dockerfile: ./../api.Dockerfile
+            args:
+                schema_branch: develop
+        networks:
+        - default
+        - karan.local.newedenanalytics.net
+        restart: unless-stopped
+        
+    proxy:
+        image: nginx:stable
+        ports:
+        - 43432:80/tcp
+        volumes:
+        - ./proxy/config:/etc/nginx/conf.d:ro
+        #- ./proxy/logs:/var/log/nginx
+        restart: unless-stopped
+        depends_on:
+        - app
+        - api
+        
+networks:
+    karan.local.newedenanalytics.net:
+        external: true
+
+volumes:
+    node_modules:

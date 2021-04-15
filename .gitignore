@@ -131,3 +131,5 @@ dmypy.json
 ## Custom ignores
 config/
 *-dev.ipynb
+.yarnrc
+.npmrc

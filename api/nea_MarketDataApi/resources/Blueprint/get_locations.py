@@ -6,7 +6,7 @@ from nea_schema.maria.sde.map import Station
 
 columns = ['id', 'name', 'type_id', 'type_name', 'location_id', 'location_flag', 'location_type', 'owner_id']
 
-def collect_locations(location_ids, conn):
+def get_locations(location_ids, conn):
     asset_query = conn.query(CorpAsset).filter(CorpAsset.item_id.in_(location_ids))
     loc_assets = DataFrame(({
         'id': row.item_id,
