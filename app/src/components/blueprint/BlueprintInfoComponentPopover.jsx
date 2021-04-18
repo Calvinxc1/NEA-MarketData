@@ -84,22 +84,25 @@ const BlueprintInfoComponentPopover = ({children, blueprints, type_id, by}) => <
           }]}
           keyField='type_id'
           pagination={paginationFactory()}
-          expandRow={{renderer: (row) => <div>
-            <BootstrapTable
-              bootstrap4
-              bordered={false}
-              columns={columns.bpItem}
-              condensed
-              data={row.items}
-              hover
-              defaultSorted={[{
-                dataField: 'bp_type',
-                order: 'desc',
-              }]}
-              keyField='item_id'
-              pagination={paginationFactory()}
-            />
-          </div>}}
+          expandRow={{
+            onlyOneExpanding: true,
+            renderer: (row) => <div>
+              <BootstrapTable
+                bootstrap4
+                bordered={false}
+                columns={columns.bpItem}
+                condensed
+                data={row.items}
+                hover
+                defaultSorted={[{
+                  dataField: 'bp_type',
+                  order: 'desc',
+                }]}
+                keyField='item_id'
+                pagination={paginationFactory()}
+              />
+            </div>
+          }}
         />
       </Popover.Content>
     </Popover>

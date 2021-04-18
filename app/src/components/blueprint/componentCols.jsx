@@ -13,8 +13,12 @@ const matCalc = (quantity, materialEfficiency, runs) => {
   return useMats;
 }
 
-const ComponentCell = ({children, type_id, by}) => {
-  const {data, status} = useQuery(['fetchBlueprintBy', {by, type_id}], fetchBlueprintBy);
+const ComponentCell = ({children, type_id, by, stationFilter}) => {
+  let queryParams = {by, type_id}
+  if(stationFilter) {
+    queryParams.station_id = stationFilter
+  }
+  const {data, status} = useQuery(['fetchBlueprintBy', queryParams], fetchBlueprintBy);
 
   return <div>{
     status !== 'success' ? <div style={{color: '#666666'}}>{children}</div>
@@ -27,7 +31,7 @@ const ComponentCell = ({children, type_id, by}) => {
   }</div>;
 }
 
-const componentCols = (by, runs, materialEfficiency, activityType) => {
+const componentCols = (by, runs, materialEfficiency, activityType, stationFilter) => {
   switch(by) {
     case 'material':
       return [{
@@ -42,7 +46,11 @@ const componentCols = (by, runs, materialEfficiency, activityType) => {
         dataField: 'type_name',
         text: 'Material',
         sort: true,
-        formatter: (type_name, {type_id}) => <ComponentCell by={by} type_id={type_id}>{type_name}</ComponentCell>,
+        formatter: (type_name, {type_id}) => <ComponentCell
+          by={by}
+          type_id={type_id}
+          stationFilter={stationFilter}
+        >{type_name}</ComponentCell>,
       },{
         dataField: 'quantity',
         text: 'Quantity',
@@ -72,7 +80,11 @@ const componentCols = (by, runs, materialEfficiency, activityType) => {
         dataField: 'type_name',
         text: 'Product',
         sort: true,
-        formatter: (type_name, {type_id}) => <ComponentCell by={by} type_id={type_id}>{type_name}</ComponentCell>,
+        formatter: (type_name, {type_id}) => <ComponentCell
+          by={by}
+          type_id={type_id}
+          stationFilter={stationFilter}
+        >{type_name}</ComponentCell>,
       },{
         dataField: 'quantity',
         text: 'Quantity',

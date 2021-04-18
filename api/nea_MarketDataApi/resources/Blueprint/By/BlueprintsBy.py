@@ -18,9 +18,16 @@ class BlueprintsBy(Resource):
         conn.close()
         
         if parent_station_id:
-            blueprints = [
-                blueprint for blueprint in blueprints
-                if blueprint['parent_station']['id'] == int(parent_station_id)
-            ]
+            filtered_blueprints = []
+            for blueprint in blueprints:
+                blueprint['items'] = [
+                    bp_item for bp_item in blueprint['items']
+                    if bp_item['parent_station']['id'] == int(parent_station_id)
+                ]
+                
+                if len(blueprint['items']) > 0:
+                    filtered_blueprints.append(blueprint)
+                
+            blueprints = filtered_blueprints
         
         return {'data': blueprints}, 200

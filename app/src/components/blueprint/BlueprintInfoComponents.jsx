@@ -3,8 +3,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 
 import componentCols from './componentCols.jsx';
 
-const BlueprintInfoComponents = ({components, by, runs, materialEfficiency, activityType}) => {
-  const columns = componentCols(by, runs, materialEfficiency, activityType);
+const BlueprintInfoComponents = ({components, by, runs, materialEfficiency, activityType, stationFilter}) => {
+  const columns = componentCols(by, runs, materialEfficiency, activityType, stationFilter);
   return <div>
     <BootstrapTable
       bootstrap4

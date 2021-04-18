@@ -9,11 +9,13 @@ const Blueprint = () => {
   const {item_id} = useParams();
   const {data, status} = useQuery(['fetchBlueprint', {item_id}], fetchBlueprint);
 
-  if(status !== 'success') {return <div>Loading...</div>}
-
-  return <div>
-    <BlueprintInfo blueprint={data.data} />
-  </div>;
+  if(status !== 'success') {
+    return <div>Loading...</div>;
+  } else {
+    return <div>
+      <BlueprintInfo blueprint={data.data} />
+    </div>;
+  }
 }
 
 export default Blueprint;

@@ -9,7 +9,7 @@ import BlueprintActivityToggle from './BlueprintActivityToggle.jsx';
 import BlueprintInfoComponents from './BlueprintInfoComponents.jsx';
 import BlueprintInfoSkills from './BlueprintInfoSkills.jsx';
 
-const BlueprintInfoActivity = ({activity, runVal, maxProdLimit, updateRuns, materialEfficiency, timeEfficiency}) => <Card key={activity.activity_type}>
+const BlueprintInfoActivity = ({activity, runVal, maxProdLimit, updateRuns, materialEfficiency, timeEfficiency, stationFilter}) => <Card key={activity.activity_type}>
   <Card.Header>
     <BlueprintActivityToggle
       eventKey={activity.activity_type}
@@ -32,6 +32,7 @@ const BlueprintInfoActivity = ({activity, runVal, maxProdLimit, updateRuns, mate
             materialEfficiency={materialEfficiency}
             runs={runVal}
             activityType={activity.activity_type}
+            stationFilter={stationFilter}
           />
         </Col>
         <Col xs={4}>
@@ -39,6 +40,7 @@ const BlueprintInfoActivity = ({activity, runVal, maxProdLimit, updateRuns, mate
             by='material'
             components={activity.products}
             runs={runVal}
+            stationFilter={stationFilter}
           />
         </Col>
         <Col xs={4}>

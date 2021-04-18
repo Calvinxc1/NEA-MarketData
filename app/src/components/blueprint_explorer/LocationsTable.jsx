@@ -3,8 +3,10 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
 import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faChevronDown, faChevronUp} from '@fortawesome/free-solid-svg-icons'
+import numeral from 'numeral';
 
 import BlueprintsTable from './BlueprintsTable.jsx'
 
@@ -30,7 +32,10 @@ const columns = [{
   dataField: 'bp_count',
   text: "BP's",
   sort: true,
+  align: 'right',
+  headerAlign: 'center',
   headerStyle: () => ({width: '128px'}),
+  formatter: (bp_count) => numeral(bp_count).format('0,0'),
 }];
 
 const defaultSorted = [{dataField: 'name', order: 'asc'}];
@@ -39,7 +44,7 @@ const expandRow = {
   renderer: (row) => <Accordion>
     {row.blueprints.length > 0 && <Card>
       <Accordion.Toggle as={Card.Header} eventKey="blueprints">
-        Blueprints ({row.blueprints.length})
+        Blueprints ({numeral(row.blueprints.length).format('0,0')})
       </Accordion.Toggle>
       <Accordion.Collapse eventKey="blueprints">
         <Card.Body><BlueprintsTable data={row.blueprints} /></Card.Body>
@@ -47,7 +52,7 @@ const expandRow = {
     </Card>}
     {row.children.length > 0 && <Card>
       <Accordion.Toggle as={Card.Header} eventKey="locations">
-        Locations ({row.bp_count - row.blueprints.length})
+        Locations ({numeral(row.bp_count - row.blueprints.length).format('0,0')})
       </Accordion.Toggle>
       <Accordion.Collapse eventKey="locations">
         <Card.Body><LocationsTable data={row.children} /></Card.Body>
@@ -71,6 +76,7 @@ const LocationsTable = (props) => <div>
     keyField="id"
     bootstrap4
     hover
+    pagination={paginationFactory()}
   />
 </div>;
 
