@@ -1,40 +1,52 @@
 import React from 'react';
-import * as d3 from 'd3';
-import {sankey} from 'd3-sankey';
-import chroma from "chroma-js";
+import {sankey, sankeyLeft, sankeyCenter} from 'd3-sankey';
+import chroma from 'chroma-js';
 
 import SankeyNode from './SankeyNode.jsx';
 import SankeyLink from './SankeyLink.jsx';
+import activityColor from './activityColor.js';
 
 const SankeyRender = ({data, width, height}) => {
   const {nodes, links} = sankey()
     .nodeId((d) => d.id)
     .nodeWidth(15)
     .nodePadding(10)
+    .nodeAlign(sankeyCenter)
     .extent([[1, 1], [width - 1, height - 5]])(data);
 
-  const color = chroma.scale("Set3")
-    .classes(nodes.length);
+  const legendItems = ['purchasing', 'manufacturing', 'copying', 'invention'];
 
-  const colorScale = d3.scaleLinear()
-    .domain([0, nodes.length])
-    .range([0, 1]);
-
-  return <g style={{ mixBlendMode: "multiply" }}>
-    {nodes.map((node, i) => (
-      <SankeyNode
-        {...node}
-        color={color(colorScale(i)).hex()}
-        key={node.id}
-      />
-    ))}
+  return <g>
     {links.map((link, i) => (
       <SankeyLink
         link={link}
-        color={color(colorScale(link.source.index)).hex()}
         key={link.index}
       />
     ))}
+    {nodes.map((node, i) => (
+      <SankeyNode
+        node={node}
+        key={node.id}
+      />
+    ))}
+    <g
+      transform={`translate(${width-20},${0})`}
+    >
+      {legendItems.map((legendItem, i) => <g key={legendItem}>
+        <circle
+          cx={0}
+          cy={(i+1) * 20}
+          r={6}
+          fill={chroma(activityColor(legendItem)).darken(1).hex()}
+        ></circle>
+        <text
+          x={-10}
+          y={(i+1) * 20}
+          textAnchor='end'
+          alignmentBaseline='middle'
+        >{legendItem}</text>
+      </g>)}
+    </g>
   </g>;
 };
 

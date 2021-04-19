@@ -19,4 +19,5 @@ def build_sankey_blueprints(bp_index, bp_item_ids, conn):
     blueprints['time_efficiency'].fillna(0, inplace=True)
     blueprints['quantity'].fillna(0, inplace=True)
     blueprints['runs'].fillna(-1, inplace=True)
+    blueprints = blueprints.reset_index().drop_duplicates().set_index('bp_type_id')
     return blueprints

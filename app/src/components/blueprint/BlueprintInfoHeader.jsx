@@ -1,20 +1,40 @@
 import React from 'react';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import Figure from 'react-bootstrap/Figure';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
+import {Link} from "react-router-dom";
 
 import buildBpUrl from './../../tools/buildBpUrl.jsx';
 
 const BlueprintInfoHeader = ({blueprint}) => <Row>
-  <Col xs={3}><Figure>
-    <Figure.Image
-      width={128}
-      height={128}
-      src={`${buildBpUrl(blueprint.type_id, blueprint.bp_type)}?size=128`}
-    />
-    <Figure.Caption>{blueprint.type_name}</Figure.Caption>
-  </Figure></Col>
+  <Col xs={3}>
+    <Figure>
+      <Figure.Image
+        width={128}
+        height={128}
+        src={`${buildBpUrl(blueprint.type_id, blueprint.bp_type)}?size=128`}
+      />
+      <Figure.Caption>{blueprint.type_name}</Figure.Caption>
+    </Figure>
+    <DropdownButton
+      as={ButtonGroup}
+      id={blueprint.type_id}
+      variant='info'
+      title='Open Production Chain'
+    >
+      {blueprint.activities.filter((activity) => activity.products.length > 0)
+        .map((activity) => activity.products.map((product) => <Dropdown.Item
+          key={product.type_id}
+          eventKey={product.type_id}
+        ><Link to={`/production/matChain/${product.type_id}`}>
+          {activity.activity_type.split('_').map((word) => word[0].toUpperCase() + word.substr(1)).join(' ')}: {product.type_name}
+      </Link></Dropdown.Item>))}
+    </DropdownButton>
+  </Col>
 
   <Col>
     <h4>Blueprint located at:</h4>

@@ -26,7 +26,6 @@ class BlueprintInfo extends React.Component {
 
   render() {
     return <div>
-      <hr />
       <BlueprintInfoHeader blueprint={this.props.blueprint} />
       <hr />
       <InputGroup>

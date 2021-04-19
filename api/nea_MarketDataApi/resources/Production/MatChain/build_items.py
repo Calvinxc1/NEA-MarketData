@@ -22,6 +22,16 @@ def build_prod_node(product, activity_type):
     })
     return prod_node
 
+def build_invent_prod_mat(invent_prod):
+    mat_node = Series({
+        'bp_type_id': invent_prod.type_id,
+        'activity_type': 'manufacturing',
+        'mat_type_id': invent_prod.type_id,
+        'mat_type_name': invent_prod.type.type_name,
+        'quantity': 1,
+    })
+    return mat_node
+
 def build_invent_mat(invent_prod):
     mat_node = Series({
         'bp_type_id': invent_prod.blueprint_id,

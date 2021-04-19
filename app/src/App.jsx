@@ -13,6 +13,7 @@ import queryWrapper from './wrappers/queryWrapper.jsx';
 const App = () => {
   return <Router>
     <NavigationBar />
+    <hr />
     <Container>
       <Switch>
         <Route path="/" exact>

@@ -3,10 +3,6 @@ import * as d3 from 'd3';
 const calcScale = (link) => link.mat_needs / link.source.output_target
 
 const sankeyLinkArea = (link) => {
-  if(link.mat_type_name === 'Megacyte') {
-    console.log(link);
-  }
-
   const areaGenerator = d3.area()
     .x((d) => d.x)
     .y0((d) => d.low)

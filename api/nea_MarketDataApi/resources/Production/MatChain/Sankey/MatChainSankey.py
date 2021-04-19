@@ -30,7 +30,11 @@ class MatChainSankey(Resource):
         products, materials = parse_build_chain(product_item, conn)
         missing_products = build_missing_products(products, materials)
         products = concat([products, missing_products], axis=0).reset_index(drop=True)
-        products['incoming_mats'] = products['bp_type_id'].map(materials.groupby('bp_type_id')['quantity'].sum()).fillna(0)
+        products = products.merge(
+            materials.groupby(['bp_type_id', 'activity_type'])['quantity'].sum().rename('incoming_mats').reset_index(),
+            on=['bp_type_id', 'activity_type'], how='left',
+        )
+        products['incoming_mats'].fillna(0, inplace=True)
 
         bp_index = products.loc[products['activity_type'] == 'manufacturing', 'bp_type_id']
         blueprints = build_sankey_blueprints(bp_index, bp_item_ids, conn)

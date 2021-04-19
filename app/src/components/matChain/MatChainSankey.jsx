@@ -1,16 +1,20 @@
 import React from 'react';
+import Jumbotron from 'react-bootstrap/Jumbotron';
 import {useQuery} from 'react-query';
+import {Provider} from 'react-redux';
 import {useParams} from 'react-router-dom';
 
 import fetchMatChainSankey from './../../fetchers/fetchMatChainSankey.jsx';
 import SankeyRender from './SankeyRender.jsx';
+import Loading from './../loading/Loading.jsx';
+import store from './store.js';
 
 const queryWrapper = (Component) => (props) => {
   const {type_id} = useParams();
   const {data, status} = useQuery(['fetchMatChainSankey', {type_id}], fetchMatChainSankey);
 
   if(status !== 'success') {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   else {
     return <MatChainSankey {...props} data={data.data} />;
@@ -36,9 +40,11 @@ class MatChainSankey extends React.Component {
   };
 
   render() {
-    return <svg width="100%" height="600" ref={this.svgRef} style={{background: '#FFFFFF'}}>
-      <SankeyRender data={this.props.data} width={this.state.width} height={this.state.height} />
-    </svg>;
+    return <Jumbotron><Provider store={store}>
+      <svg width="100%" height="900" ref={this.svgRef}>
+        <SankeyRender data={this.props.data} width={this.state.width} height={this.state.height} />
+      </svg>
+    </Provider></Jumbotron>;
   }
 }
 
