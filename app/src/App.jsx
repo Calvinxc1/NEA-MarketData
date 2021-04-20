@@ -6,7 +6,7 @@ import NavigationBar from './components/navbar/NavigationBar.jsx';
 import Blueprint from './components/blueprint/Blueprint.jsx';
 import BlueprintExplorer from './components/blueprint_explorer/BlueprintExplorer.jsx';
 import Home from './components/home/Home.jsx';
-import MatChainSankey from './components/matChain/MatChainSankey.jsx';
+import MatChain from './components/matChain/MatChain.jsx';
 import NotFound from './components/not_found/NotFound.jsx';
 import queryWrapper from './wrappers/queryWrapper.jsx';
 
@@ -16,21 +16,11 @@ const App = () => {
     <hr />
     <Container>
       <Switch>
-        <Route path="/" exact>
-          <Home />
-        </Route>
-        <Route path="/blueprint" exact>
-          <BlueprintExplorer />
-        </Route>
-        <Route path="/blueprint/:item_id">
-          <Blueprint />
-        </Route>
-        <Route path="/production/matChain/:type_id">
-          <MatChainSankey />
-        </Route>
-        <Route>
-          <NotFound />
-        </Route>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/blueprint" component={BlueprintExplorer} />
+        <Route path="/blueprint/:item_id" component={Blueprint} />
+        <Route path="/production/matChain/:type_id" component={MatChain} />
+        <Route component={NotFound} />
       </Switch>
     </Container>
   </Router>;

@@ -45,7 +45,8 @@ class MatChainSankey(Resource):
         active_prods['output_target'] = output_target
         
         nodes, links = compile_sankey_data(active_prods, materials, products, blueprints)
-        nodes = [node for node in nodes.values()]
+        nodes = sorted([node for node in nodes.values()], key=lambda x: x['id'])
+        links = sorted(links, key=lambda x: x['mat_type_id'])
         
         nodes = loads(dumps(nodes, cls=NpEncoder))
         
