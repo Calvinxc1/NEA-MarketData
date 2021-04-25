@@ -2,12 +2,12 @@ import React from 'react';
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 
-import NavigationBar from './components/navbar/NavigationBar.jsx';
-import Blueprint from './components/blueprint/Blueprint.jsx';
-import BlueprintExplorer from './components/blueprint_explorer/BlueprintExplorer.jsx';
-import Home from './components/home/Home.jsx';
-import MatChain from './components/matChain/MatChain.jsx';
-import NotFound from './components/not_found/NotFound.jsx';
+import NavigationBar from './components/Navbar/NavigationBar.jsx';
+import BlueprintItemInfo from './components/BlueprintItemInfo/BlueprintItemInfo.jsx';
+import BlueprintExplorer from './components/BlueprintExplorer/BlueprintExplorer.jsx';
+import Home from './components/Home/Home.jsx';
+import ProdChain from './components/ProdChain/ProdChain.jsx';
+import NotFound from './components/NotFound/NotFound.jsx';
 import queryWrapper from './wrappers/queryWrapper.jsx';
 
 const App = () => {
@@ -16,10 +16,10 @@ const App = () => {
     <hr />
     <Container>
       <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/blueprint" component={BlueprintExplorer} />
-        <Route path="/blueprint/:item_id" component={Blueprint} />
-        <Route path="/production/matChain/:type_id" component={MatChain} />
+        <Route exact path='/' component={Home} />
+        <Route exact path='/blueprint/explorer' component={BlueprintExplorer} />
+        <Route exact path='/blueprint/item/:item_id' component={BlueprintItemInfo} />
+        <Route exact path='/production/chain/:type_id' component={ProdChain} />
         <Route component={NotFound} />
       </Switch>
     </Container>
