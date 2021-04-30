@@ -14,7 +14,7 @@ const scaleParsing = (link, direction, scalePath) => {
   return [startScale, endScale, scaleRange];
 }
 
-const sankeyLinkArea = (link, scalePath='mat_vol') => {
+const sankeyLinkArea = (link, scalePath='units') => {
   const [sourceStartScale, sourceEndScale, sourceScaleRange] = scaleParsing(link, 'source', scalePath);
   const [targetStartScale, targetEndScale, targetScaleRange] = scaleParsing(link, 'target', scalePath);
 

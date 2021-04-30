@@ -1,7 +1,7 @@
 from nea_schema.maria.esi.corp import CorpBlueprint
 
 from .filter_blueprint_items import filter_blueprint_items
-from ....tools.extractors import extract_asset_location
+from .....tools.extractors import extract_asset_location
 
 def blueprint_location_tally(conn, location_limits=[], search=[], type_filter=None):
     blueprint_items = conn.query(CorpBlueprint)

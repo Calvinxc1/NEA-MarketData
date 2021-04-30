@@ -1,4 +1,4 @@
-from .parse_blueprint import parse_blueprint
+from .parse_blueprint_item import parse_blueprint_item
 from .parse_blueprint_activity import parse_blueprint_activity
 from .parse_blueprint_material import parse_blueprint_material
 from .parse_blueprint_product import parse_blueprint_product

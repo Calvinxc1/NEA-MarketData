@@ -5,7 +5,7 @@ import Image from 'react-bootstrap/Image';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faChevronDown, faChevronCircleUp} from '@fortawesome/free-solid-svg-icons';
+import {faChevronDown, faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import numeral from 'numeral';
 
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
@@ -47,7 +47,7 @@ const expandRowTemplate = {
   showExpandColumn: true,
   expandHeaderColumnRenderer: () => <span></span>,
   expandColumnRenderer: ({expanded}) => <span>
-    <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronCircleUp} />
+    <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronUp} />
   </span>,
 };
 

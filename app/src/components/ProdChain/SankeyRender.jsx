@@ -2,16 +2,15 @@ import React from 'react';
 import {useQuery} from 'react-query';
 import {sankey, sankeyCenter} from 'd3-sankey';
 
-import fetchProdChainSankey from './../../fetchers/fetchProdChainSankey.jsx';
+import fetchProductionChain from './../../fetchers/fetchProductionChain.js';
 import SankeyNode from './SankeyNode.jsx';
 import SankeyLink from './SankeyLink.jsx';
-import SankeyLegend from './SankeyLegend.jsx';
 import SankeyInfo from './SankeyInfo.jsx';
 import Loading from './../Loading/Loading.jsx';
 
 const queryWrapper = (Component) => (props) => {
-  const {type_id, output_target, bp_item_ids} = props;
-  const {data, status} = useQuery(['fetchProdChainSankey', {type_id, output_target, bp_item_ids}], fetchProdChainSankey);
+  const {type_id, output_units, station_ids} = props;
+  const {data, status} = useQuery(['fetchProductionChain', {type_id, output_units, station_ids}], fetchProductionChain);
   return status === 'success' ? <Component {...props} data={data.data} /> : <Loading />;
 };
 
@@ -35,10 +34,10 @@ class SankeyRender extends React.Component {
       .nodeWidth(15)
       .nodePadding(10)
       .nodeAlign(sankeyCenter)
-      .nodeSort((a,b) => {
-        return a.product.group.category.name.localeCompare(b.product.group.category.name)
-          || a.product.group.name.localeCompare(b.product.group.name)
-          || a.product.type_name.localeCompare(b.product.type_name);
+      .nodeSort((a, b) => {
+        return a.product.type.group.category.name.localeCompare(b.product.type.group.category.name)
+          || a.product.type.group.name.localeCompare(b.product.type.group.name)
+          || a.product.type.name.localeCompare(b.product.type.name);
       })
       .extent([[1, 1], [width - 1, height - 1]]);
 
@@ -56,12 +55,9 @@ class SankeyRender extends React.Component {
     });
     const {nodes, links} = this.sankey ? this.sankey(this.props.data) : {};
 
-    console.log(nodes, links);
-
     return <div>
       <svg width="100%" height="900" ref={this.svgRef}>
         <g>
-          {this.state.width && <SankeyLegend width={this.state.width} />}
           <rect
             x={0}
             y={0}
@@ -92,9 +88,6 @@ class SankeyRender extends React.Component {
       {nodes && links && <SankeyInfo
         nodes={nodes}
         links={links}
-        bp_item_ids={this.props.bp_item_ids}
-        addBpItemId={this.props.addBpItemId}
-        removeBpItemId={this.props.removeBpItemId}
       />}
     </div>;
   }

@@ -2,7 +2,7 @@ from .parse_blueprint_activity import parse_blueprint_activity
 from .parse_location import parse_location
 from .parse_type import parse_type
 
-def parse_blueprint(blueprint_item):
+def parse_blueprint_item(blueprint_item, include_activities=True):
     blueprint = {
         'item_id': blueprint_item.item_id,
         'type': parse_type(blueprint_item.type),
@@ -15,11 +15,13 @@ def parse_blueprint(blueprint_item):
         'quantity': max(0, blueprint_item.quantity),
         'runs': max(0, blueprint_item.runs),
         'max_production_limit': blueprint_item.blueprint.max_production_limit,
-        'activities': [
+    }
+    
+    if include_activities:
+        blueprint['activities'] = [
             parse_blueprint_activity(activity)
             for activity in blueprint_item.blueprint.activity
-        ],
-    }
+        ]
 
     if blueprint_item.quantity == -2: blueprint['bp_type'] = 'copy'
     elif blueprint_item.type.group.category.category_id == 34: blueprint['bp_type'] = 'relic'

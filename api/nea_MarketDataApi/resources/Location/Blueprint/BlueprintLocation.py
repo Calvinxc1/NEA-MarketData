@@ -2,9 +2,7 @@ from flask import request
 from nea_schema.maria.esi.corp import CorpAsset, CorpBlueprint
 
 from ...Root import Root
-from .blueprint_location_tally import blueprint_location_tally
-from .construct_station_response import construct_station_response
-from .construct_location_response import construct_location_response
+from .helpers import blueprint_location_tally, construct_station_response, construct_location_response
 
 class BlueprintLocation(Root):
     def get(self, location_id=None):

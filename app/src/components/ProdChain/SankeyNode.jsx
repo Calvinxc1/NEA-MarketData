@@ -15,7 +15,7 @@ class SankeyNode extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state.baseColor = chroma(activityColor(this.props.node.activity_type));
+    this.state.baseColor = chroma(activityColor(this.props.node.activity.type));
   }
 
   hoverOn = () => this.props.dispatch({
@@ -58,7 +58,7 @@ class SankeyNode extends React.Component {
     <div style={{
       color: this.checkHover() ? this.state.baseColor.brighten(1).hex() : this.state.baseColor.darken(1).hex(),
     }}>
-      {this.props.node.product.type_name}
+      {this.props.node.product.type.name}
     </div>
   </Tooltip>;
 

@@ -1,7 +1,7 @@
 from nea_schema.maria.esi.corp import CorpAsset
 
-from ....tools.parsers import parse_location
-from ....tools.extractors import extract_stations
+from .....tools.parsers import parse_location
+from .....tools.extractors import extract_stations
 
 def construct_station_response(conn, location_bp_counts):
     blueprints = []
