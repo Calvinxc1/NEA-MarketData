@@ -10,7 +10,11 @@ import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
 const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor: '#204060'}}>
   <h3><Image
     thumbnail
-    src={parseTypeImageUrl(link.material.type, 64, link.material.type.group.category.id === 9 ? 'bpc' : 'icon')}
+    src={parseTypeImageUrl(link.material.type, 64,
+      link.material.type.group.category.id === 9 ? 'bpc'
+      : link.material.type.group.category.id === 34 ? 'relic'
+      : 'icon'
+    )}
     style={{background: '#000000'}}
   /> {link.material.type.name}</h3>
   <hr />
@@ -31,10 +35,12 @@ const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor
       <p>
         <Image
           thumbnail
-          src={
-            link.source.activity.type === 'purchase' ? 'https://wiki.eveuniversity.org/images/9/9f/Market.png'
-            : parseTypeImageUrl(link.source.type, 64, link.source.type.group.category.id === 9 ? 'bpc' : 'icon')
-          }
+          src={link.source.activity.type === 'purchase' ? 'https://wiki.eveuniversity.org/images/9/9f/Market.png'
+          : parseTypeImageUrl(link.source.type, 64,
+            link.source.type.group.category.id === 9 ? 'bpc'
+            : link.source.type.group.category.id === 34 ? 'relic'
+            : 'icon'
+          )}
           style={{background: '#000000'}}
         /> <b><u>Source Process</u></b>: {link.source.type.name}
       </p>
@@ -43,7 +49,11 @@ const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor
       <p>
         <Image
           thumbnail
-          src={parseTypeImageUrl(link.target.type, 64, link.target.type.group.category.id === 9 ? 'bpc' : 'icon')}
+          src={parseTypeImageUrl(link.target.type, 64,
+            link.target.type.group.category.id === 9 ? 'bpc'
+            : link.target.type.group.category.id === 34 ? 'relic'
+            : 'icon'
+          )}
           style={{background: '#000000'}}
         /> <b><u>Target Process</u></b>: {link.target.type.name}
       </p>

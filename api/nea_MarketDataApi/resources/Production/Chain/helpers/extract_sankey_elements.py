@@ -76,7 +76,7 @@ def extract_sankey_elements(conn, product_items, output_units, station_ids=[], b
             nodes = merge_node(nodes, copy_node)
 
             for material_item in copy_activity_item.material:
-                sub_nodes, sub_links = extract_link(conn, material_item, copy_node, station_ids, ignore_activity)
+                sub_nodes, sub_links = extract_link(conn, material_item, copy_node, station_ids, bp_items, ignore_activity)
                 for sub_node in sub_nodes.values(): nodes = merge_node(nodes, sub_node)
                 for sub_link in sub_links.values(): links = merge_link(links, sub_link)
         else:

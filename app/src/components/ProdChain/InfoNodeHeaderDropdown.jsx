@@ -13,6 +13,7 @@ const InfoNodeHeaderDropdown = ({item}) => <Row>
         item.bp_type === 'original' ? 'bp'
         : item.bp_type === 'copy' ? 'bpc'
         : item.bp_type === 'relic' ? 'relic'
+        : item.type.group.category.id === 34 ? 'relic'
         : 'bpc'
       )}
       style={{background: '#000000'}}
