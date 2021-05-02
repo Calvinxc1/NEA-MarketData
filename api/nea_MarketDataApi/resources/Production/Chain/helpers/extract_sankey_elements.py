@@ -57,33 +57,9 @@ def extract_sankey_elements(conn, product_items, output_units, station_ids=[], b
         for sub_link in sub_links.values(): links = merge_link(links, sub_link)
             
     if product_item.activity.activity_type == 'invention':
-        invent_link = parse_invent_link(product_item, node['output_runs'])
-        invent_link['available_units'] = extract_asset_count(conn, invent_link['source'], station_ids)
-        links = merge_link(links, invent_link)
-        
-        copy_activity_items = [
-            activity for activity in product_item.activity.blueprint.activity
-            if activity.activity_type == 'copying'
-        ]
-        
-        if len(copy_activity_items) == 1:
-            copy_activity_item = copy_activity_items[0]
-            copy_blueprints = [blueprint for blueprint in blueprints if blueprint['bp_type'] in ['original', 'placeholder']]
-            copy_selection = select_blueprint(copy_blueprints, bp_items.get(copy_activity_item.blueprint_id))
-            copy_blueprint_items = {'options': copy_blueprints, 'selected': copy_selection}
-            copy_node = parse_copy_node(copy_activity_item, node['output_runs'], copy_blueprint_items)
-            copy_node['available_units'] = extract_asset_count(conn, copy_node['node_id'], station_ids)
-            nodes = merge_node(nodes, copy_node)
-
-            for material_item in copy_activity_item.material:
-                sub_nodes, sub_links = extract_link(conn, material_item, copy_node, station_ids, bp_items, ignore_activity)
-                for sub_node in sub_nodes.values(): nodes = merge_node(nodes, sub_node)
-                for sub_link in sub_links.values(): links = merge_link(links, sub_link)
-        else:
-            type_item = conn.query(Type).filter_by(type_id=product_item.blueprint_id).one()
-            market_node = build_market_node(type_item, node['output_runs'])
-            market_node['available_units'] = extract_asset_count(conn, market_node['node_id'], station_ids)
-            nodes = merge_node(nodes, market_node)
+        sub_nodes, sub_links = extract_invent(conn, product_item, node, blueprints, station_ids, bp_items, ignore_activity)
+        for sub_node in sub_nodes.values(): nodes = merge_node(nodes, sub_node)
+        for sub_link in sub_links.values(): links = merge_link(links, sub_link)
             
     return nodes, links
 
@@ -101,5 +77,36 @@ def extract_link(conn, material_item, node, station_ids, bp_items, ignore_activi
         market_node['available_units'] = extract_asset_count(conn, market_node['node_id'], station_ids)
         nodes = {market_node['node_id']: market_node}
         links = {link['link_id']: link}
+        
+    return nodes, links
+
+def extract_invent(conn, product_item, node, blueprints, station_ids, bp_items, ignore_activity):
+    invent_link = parse_invent_link(product_item, node['output_runs'])
+    invent_link['available_units'] = extract_asset_count(conn, invent_link['source'], station_ids)
+    links = {invent_link['link_id']: invent_link}
+
+    copy_activity_items = [
+        activity for activity in product_item.activity.blueprint.activity
+        if activity.activity_type == 'copying'
+    ]
+
+    if len(copy_activity_items) == 1:
+        copy_activity_item = copy_activity_items[0]
+        copy_blueprints = [blueprint for blueprint in blueprints if blueprint['bp_type'] in ['original', 'placeholder']]
+        copy_selection = select_blueprint(copy_blueprints, bp_items.get(copy_activity_item.blueprint_id))
+        copy_blueprint_items = {'options': copy_blueprints, 'selected': copy_selection}
+        copy_node = parse_copy_node(copy_activity_item, node['output_runs'], copy_blueprint_items)
+        copy_node['available_units'] = extract_asset_count(conn, copy_node['node_id'], station_ids)
+        nodes = {copy_node['node_id']: copy_node}
+
+        for material_item in copy_activity_item.material:
+            sub_nodes, sub_links = extract_link(conn, material_item, copy_node, station_ids, bp_items, ignore_activity)
+            for sub_node in sub_nodes.values(): nodes = merge_node(nodes, sub_node)
+            for sub_link in sub_links.values(): links = merge_link(links, sub_link)
+    else:
+        type_item = conn.query(Type).filter_by(type_id=product_item.blueprint_id).one()
+        market_node = build_market_node(type_item, node['output_runs'])
+        market_node['available_units'] = extract_asset_count(conn, market_node['node_id'], station_ids)
+        nodes = {market_node['node_id']: market_node}
         
     return nodes, links

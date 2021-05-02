@@ -46,6 +46,34 @@ paths:
         202:
           description: >
             Accepted SDE zip file and is processing.
+            
+  /blueprint/item/{item_id}:
+    get:
+      summary: >
+        Returns information on a specific blueprint item
+      description: >
+        Returns detailed information on a specific blueprint item, by `item_id`.
+      tags:
+      - Blueprints
+      parameters:
+      - name: item_id
+        in: path
+        description: >
+          The `item_id` of the blueprint to be returned.
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: >
+            Successfully returned blueprint item information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BlueprintItem'
   
   /blueprint/location:
     get:
@@ -298,42 +326,8 @@ components:
         activities:
           type: array
           items:
-            type: object
-            properties:
-              activity_type:
-                type: string
-                enum: ["manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
-              materials:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    quantity:
-                      type: integer
-                    type:
-                      $ref: "#/components/schemas/TypeDetails"
-              products:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    probability:
-                      type: number
-                    quantity:
-                      type: integer
-                    type:
-                      $ref: "#/components/schemas/TypeDetails"
-              skills:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    level:
-                      type: integer
-                    type:
-                      $ref: "#/components/schemas/TypeDetails"
-              time:
-                type: integer
+            allOf:
+            - $ref: '#/components/schemas/BlueprintActivityDetails'
         bp_type:
           type: string
           enum: ["original", "copy", "relic"]
@@ -353,6 +347,249 @@ components:
           type: integer
         type:
           $ref: "#/components/schemas/TypeDetails"
+          
+    BlueprintActivityDetails:
+      type: object
+      properties:
+        activity_type:
+          type: string
+          enum: ["manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
+        materials:
+          type: array
+          items:
+            type: object
+            properties:
+              quantity:
+                type: integer
+              type:
+                $ref: "#/components/schemas/TypeDetails"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              probability:
+                type: number
+              quantity:
+                type: integer
+              type:
+                $ref: "#/components/schemas/TypeDetails"
+        skills:
+          type: array
+          items:
+            type: object
+            properties:
+              level:
+                type: integer
+              type:
+                $ref: "#/components/schemas/TypeDetails"
+        time:
+          type: integer
+          
+    BlueprintItem:
+      type: object
+      properties:
+        item_id:
+          type: integer
+          example: 1032906040948
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeDetails'
+          - example:
+              id: 28607
+              name: Orca Blueprint
+              group:
+                id: 945
+                name: Industrial Command Ship Blueprint
+                category:
+                  id: 9
+                  name: Blueprint
+              market_group:
+                id: 2334
+                name: ORE
+                parent:
+                  id: 2333
+                  name: Industrial Command Ships
+                  parent:
+                    id: 204
+                    name: Ships
+                    parent:
+                      id: 2
+                      name: Blueprints & Reactions
+              mass: null
+              volume: 0.01
+              portion_size: 1
+        location:
+          allOf:
+          - $ref: '#/components/schemas/LocationDetails'
+          - example:
+              location_id: 1025461508274
+              name: Ships
+              type:
+                id: 17363
+                name: Small Audit Log Secure Container
+                group:
+                  id: 448
+                  name: Audit Log Secure Container
+                  category:
+                    id: 2
+                    name: Celestial
+                market_group:
+                  id: 1652
+                  name: Audit Log Containers
+                  parent:
+                    id: 379
+                    name: Cargo Containers
+                    parent:
+                      id: 404
+                      name: Deployable Structures
+                      parent:
+                        id: 477
+                        name: Structures
+                mass: 10000
+                volume: 100
+                portion_size: 1
+              parent:
+                location_id: 1034503382954
+                flag: CorpSAG7
+                type: item
+              flag: CorpSAG7
+        material_efficiency:
+          type: integer
+          example: 9
+        time_efficiency:
+          type: integer
+          example: 16
+        quantity:
+          type: integer
+          example: 0
+        runs:
+          type: integer
+          example: 1
+        max_production_limit:
+          type: integer
+          example: 1
+        activities:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/BlueprintActivityDetails'
+            - example:
+                activity_type: manufacturing
+                time: 1500000
+                materials:
+                  - type:
+                      id: 21013
+                      name: Capital Sensor Cluster
+                      group:
+                        id: 873
+                        name: Capital Construction Components
+                        category:
+                          id: 17
+                          name: Commodity
+                      market_group:
+                        id: 781
+                        name: Standard Capital Ship Components
+                        parent:
+                          id: 1035
+                          name: Components
+                          parent:
+                            id: 475
+                            name: Manufacture & Research
+                      mass: 10000
+                      volume: 10000
+                      portion_size: 1
+                    quantity: 4
+                products:
+                  - type:
+                      id: 28606
+                      name: Orca
+                      group:
+                        id: 941
+                        name: Industrial Command Ship
+                        category:
+                          id: 6
+                          name: Ship
+                      market_group:
+                        id: 2336
+                        name: ORE
+                        parent:
+                          id: 2335
+                          name: Industrial Command Ships
+                          parent:
+                            id: 1382
+                            name: Industrial Ships
+                            parent:
+                              id: 4
+                              name: Ships
+                      mass: 150000000
+                      volume: 10250000
+                      portion_size: 1
+                    quantity: 1
+                    probability: 1
+                skills:
+                  - type:
+                      id: 22242
+                      name: Capital Ship Construction
+                      group:
+                        id: 268
+                        name: Production
+                        category:
+                          id: 16
+                          name: Skill
+                      market_group:
+                        id: 369
+                        name: Production
+                        parent:
+                          id: 150
+                          name: Skills
+                      mass: null
+                      volume: 0.01
+                      portion_size: 1
+                    level: 1
+        bp_type:
+          type: string
+          enum: ["original", "copy", "relic"]
+          example: 'copy'
+        parent_station:
+          type: object
+          properties:
+            station_id:
+              type: integer
+              example: 1032903563769
+            name:
+              type: string
+              example: 'Alentene - IChooseYou Market and Industry'
+            type:
+              allOf:
+              - $ref: '#/components/schemas/TypeDetails'
+              - example:
+                  id: 35827
+                  name: Sotiyo
+                  group:
+                    id: 1404
+                    name: Engineering Complex
+                    category:
+                      id: 65
+                      name: Structure
+                  market_group:
+                    id: 2324
+                    name: Engineering Complexes
+                    parent:
+                      id: 477
+                      name: Structures
+                  mass: 50000000000
+                  volume: 800000
+                  portion_size: 1
+            system_id:
+              type: integer
+              example: 30005304
+            location_type:
+              type: string
+              example: 'system'
+            owner_id:
+              type: integer
+              example: 98425418
     
     StationBlueprint:
       type: array
