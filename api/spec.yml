@@ -250,7 +250,31 @@ paths:
                     type: array
                     items:
                       type: string
-      
+    
+  /production/queue:
+    post:
+      summary: >
+        Adds a new item to the production queue
+      description: >
+        Takes the data information and adds that item to the production queue.
+      tags:
+      - Production
+      requestBody:
+        description: >
+          The production item to add to the queue.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: >
+            Successfully added item to the production queue.
+          content:
+            application/json:
+              schema:
+                type: object
+    
 components:
   schemas:
     TypeDetails:

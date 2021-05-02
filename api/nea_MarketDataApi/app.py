@@ -6,8 +6,8 @@ from openapi_spec_validator.schemas import read_yaml_file
 from pathlib import Path
 
 from .resources.Blueprint import BlueprintItem, BlueprintLocation
-from .resources.Production import ProductionChain
-from config.config import sql_params
+from .resources.Production import ProductionChain, ProductionQueue
+from config.config import sql_params, mongo_params
 
 app = Flask(__name__)
 api = Api(app)
@@ -23,6 +23,7 @@ kwargs = {
     'logger': gunicorn_logger,
     'spec': spec,
     'sql_params': sql_params,
+    'mongo_params': mongo_params,
     'diag': False,
 }
 
@@ -39,5 +40,10 @@ api.add_resource(
 api.add_resource(
     ProductionChain,
     '/production/chain/<type_id>',
+    resource_class_kwargs=kwargs,
+)
+api.add_resource(
+    ProductionQueue,
+    '/production/queue',
     resource_class_kwargs=kwargs,
 )

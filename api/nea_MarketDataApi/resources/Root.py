@@ -11,10 +11,11 @@ from sqlalchemy.orm import sessionmaker
 from ..tools import build_maria_conn
 
 class Root(Resource):
-    def __init__(self, logger, spec, sql_params, diag=False):
+    def __init__(self, logger, spec, sql_params, mongo_params, diag=False):
         self._logger = logger
         self._spec = spec
         self._sql_params = sql_params
+        self._mongo_params = mongo_params
         self._diag = diag
         
     def _maria_connect(self):
