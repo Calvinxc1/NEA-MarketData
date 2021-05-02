@@ -4,7 +4,6 @@ from .....tools.parsers import parse_location
 from .....tools.extractors import extract_stations
 
 def construct_station_response(conn, location_bp_counts):
-    blueprints = []
     office_location_items = conn.query(CorpAsset).filter(CorpAsset.item_id.in_(location_bp_counts.keys()))
     offices = [parse_location(office_location_item) for office_location_item in office_location_items]
     station_ids = [office['parent']['location_id'] for office in offices]
@@ -23,4 +22,4 @@ def construct_station_response(conn, location_bp_counts):
         for office in offices
         if office['parent']['location_id'] == station['station_id']
     ]
-    return blueprints, locations
+    return locations

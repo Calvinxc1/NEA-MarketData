@@ -7,7 +7,7 @@ def merge_node(nodes, node):
         node['output_runs'] = node['output_units'] / (node['product']['quantity'] * node['product']['probability'])
         node['prod_time'] = calc_prod_time(
             node['activity']['time'],
-            node['items']['options'].get(node['items']['selected'], {}).get('time_efficiency', 0),
+            node['items']['selected'].get('time_efficiency', 0),
             node['output_runs'],
         )
     

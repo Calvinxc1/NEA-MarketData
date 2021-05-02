@@ -15,8 +15,9 @@ class ProdChain extends React.Component {
     },
     station: {
       id: null,
-      name: 'Please choose a station'
+      name: 'No Station Selected',
     },
+    bp_items: null,
   };
 
   updateOutputUnits = (output_units) => this.setState({output_units});
@@ -24,6 +25,8 @@ class ProdChain extends React.Component {
   updateScalePath = (scalePath) => this.setState({scalePath});
 
   updateStation = (station) => this.setState({station});
+
+  updateBlueprintItems = (bp_items) => this.setState({bp_items});
 
   render() {
     return <Jumbotron>
@@ -33,6 +36,7 @@ class ProdChain extends React.Component {
         scalePath={this.state.scalePath}
         updateScalePath={this.updateScalePath}
         station={this.state.station}
+        updateBlueprintItems={this.updateBlueprintItems}
         updateStation={this.updateStation}
       />
       <Provider store={store}>
@@ -40,7 +44,9 @@ class ProdChain extends React.Component {
           type_id={this.props.match.params.type_id}
           output_units={this.state.output_units}
           station_ids={this.state.station.id ? [this.state.station.id] : []}
+          bp_items={this.state.bp_items}
           scalePath={this.state.scalePath.value}
+          updateBlueprintItems={this.updateBlueprintItems}
         />
       </Provider>
     </Jumbotron>;

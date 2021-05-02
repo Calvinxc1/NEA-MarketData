@@ -12,7 +12,11 @@ const columns = [{
   headerAlign: 'center',
   formatter: (typeId, {type}) => <Image
     thumbnail
-    src={parseTypeImageUrl(type, 32, type.group.category.id === 9 ? 'bpc' : 'icon')}
+    src={parseTypeImageUrl(type, 32,
+      type.group.category.id === 9 ? 'bpc'
+      : type.group.category.id === 34 ? 'relic'
+      : 'icon'
+    )}
     style={{background: '#000000'}}
   />,
   headerStyle: {width: '64px'},
@@ -46,7 +50,7 @@ const SankeyInfoNodeMaterials = ({materials}) => <BootstrapTable
   columns={columns}
   data={parseMaterials(materials)}
   defaultSorted={defaultSorted}
-  keyField='material.type.id'
+  keyField='type.id'
   noDataIndication='No Inputs'
   bootstrap4
   hover

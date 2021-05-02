@@ -9,8 +9,8 @@ import SankeyInfo from './SankeyInfo.jsx';
 import Loading from './../Loading/Loading.jsx';
 
 const queryWrapper = (Component) => (props) => {
-  const {type_id, output_units, station_ids} = props;
-  const {data, status} = useQuery(['fetchProductionChain', {type_id, output_units, station_ids}], fetchProductionChain);
+  const {type_id, output_units, station_ids, bp_items} = props;
+  const {data, status} = useQuery(['fetchProductionChain', {type_id, output_units, station_ids, bp_items}], fetchProductionChain);
   return status === 'success' ? <Component {...props} data={data.data} /> : <Loading />;
 };
 
@@ -42,6 +42,14 @@ class SankeyRender extends React.Component {
       .extent([[1, 1], [width - 1, height - 1]]);
 
     this.setState({width, height});
+  };
+
+  buildBaseBpItems = (nodes) => {
+    let bp_items = {}
+    nodes.filter((node) => node.type.id !== -1).forEach((node) => {
+      bp_items[node.product.type.id] = node.items.selected.item_id
+    });
+    return bp_items;
   };
 
   render() {
@@ -88,6 +96,8 @@ class SankeyRender extends React.Component {
       {nodes && links && <SankeyInfo
         nodes={nodes}
         links={links}
+        bp_items={this.props.bp_items ? this.props.bp_items : this.buildBaseBpItems(this.props.data.nodes)}
+        updateBlueprintItems={this.props.updateBlueprintItems}
       />}
     </div>;
   }

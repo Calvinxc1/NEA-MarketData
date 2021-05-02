@@ -8,7 +8,7 @@ def parse_link(material_item, node):
         'target': node['node_id'],
         'material': parse_blueprint_material(material_item),
         'target_runs': node['output_runs'],
-        'target_me': node['items']['options'].get(node['items']['selected'], {}).get('material_efficiency', 0),
+        'target_me': node['items']['selected'].get('material_efficiency', 0),
         'target_process': node['activity']['type'],
     }
     

@@ -1,0 +1,872 @@
+openapi: 3.0.0
+info:
+  version: "1.0"
+  title: >
+    NEA API
+  description: >
+    New Eden Analytics API Endpoints
+paths:
+  /sso/new_auth:
+    get:
+      summary: >
+        Begin a new OAuth authorization process.
+      tags:
+      - OAuth
+      responses:
+        302:
+          description: >
+            Redirects to EVE Online SSO login page.
+            
+  /sso/_oauth:
+    get:
+      summary: >
+        Receive OAuth data.
+      tags:
+      - OAuth
+      responses:
+        200:
+          description: >
+            Stores OAuth data.
+  
+  /sde:
+    post:
+      summary: >
+        Load a new SDE to the database.
+      tags:
+      - SDE
+      requestBody:
+        description: >
+          EVE Online Static Data Export, in original .zip format.
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        202:
+          description: >
+            Accepted SDE zip file and is processing.
+  
+  /blueprint/location:
+    get:
+      summary: >
+        Returns a listing of stations that have corp blueprints.
+      description: >
+        Returns all top-level (stations) locations that contain corporation-held blueprints, including a count of blueprints at that location, and the office `location_id` for further parsing using the `/location/blueprint/{location_id}` endpoint.
+      tags:
+      - Blueprints
+      parameters:
+      - name: search
+        in: query
+        description: >
+          Text search/filtering of blueprint names that count toward a location.
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: >
+          Blueprint type filtering for counting a blueprint toward a location.
+        required: false
+        schema:
+          type: string
+          enum: ["original", "copy", "relic"]
+      responses:
+        200:
+          description: >
+            Successful return of bluperint listing.
+          content:
+            application/json:    
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/StationBlueprint'
+        400:
+          description: >
+            Error in request - user end.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: array
+                    items:
+                      type: string
+                    
+  /blueprint/location/{location_id}:
+    get:
+      summary: >
+        Returns a listing of blueprint & sub-items w/ blueprints at the specified `location_id`.
+      description: >
+        Returns a listing of all blueprints at the specified `location_id`, as well as a listing of all child locations that have blueprints, including their respective blueprint counts.
+      tags:
+      - Blueprints
+      parameters:
+      - name: location_id
+        in: path
+        description: >
+          The `location_id` of the location being queried.
+        required: true
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: >
+          Text search/filtering of blueprint names that count toward a location.
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: >
+          Blueprint type filtering for counting a blueprint toward a location.
+        required: false
+        schema:
+          type: string
+          enum: ["original", "copy", "relic"]
+      responses:
+        200:
+          description: >
+            Successful return of the location's blueprint & children listing.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/LocationBlueprint'
+        400:
+          description: >
+            Error in request - user end.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: array
+                    items:
+                      type: string
+                      
+  /production/chain/{type_id}:
+    get:
+      summary: >
+        Gets sankey diagram data for production chain.
+      description: >
+        Returns sankey chart nodes and links for producing a specific `type_id` item. Configurable with specific blueprints and locations.
+      tags:
+      - Production
+      parameters:
+      - name: type_id
+        in: path
+        description: >
+          The `type_id` of the item whose production chain will be rendered.
+        required: true
+        schema:
+          type: integer
+      - name: output_units
+        in: query
+        description: >
+          The number of units of `type_id` to be produced.
+        required: false
+        schema:
+          type: integer
+      - name: station_ids
+        in: query
+        description: >
+          The `station_id`'s to restrict blueprint selection to.
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: bp_items
+        in: query
+        description: >
+          Explicit blueprint mappings for productions.
+        required: false
+        schema:
+          type: string
+      - name: ignore_activity
+        in: query
+        description: >
+          The blueprint activities to ignore in the production chain
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum: ["manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
+      responses:
+        200:
+          description: >
+            Successful return of sankey components.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ProdChain"
+        400:
+          description: >
+            Error in request - user end.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: array
+                    items:
+                      type: string
+      
+components:
+  schemas:
+    TypeDetails:
+      type: object
+      properties:
+        group:
+          type: object
+          properties:
+            category:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            id:
+              type: integer
+            name:
+              type: string
+        id:
+          type: integer
+        market_group:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            parent:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+        mass:
+          type: number
+          nullable: true
+        name:
+          type: string
+        portion_size:
+          type: integer
+        volume:
+          type: number
+          
+    LocationDetails:
+      type: object
+      properties:
+        flag:
+          type: string
+          enum: ["CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7"]
+        location_id:
+          type: integer
+        name:
+          type: string
+          nullable: true
+        parent:
+          type: object
+          properties:
+            flag:
+              type: string
+            location_id:
+              type: integer
+            type:
+              type: string
+        type:
+          $ref: "#/components/schemas/TypeDetails"
+          
+    BlueprintDetails:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            type: object
+            properties:
+              activity_type:
+                type: string
+                enum: ["manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
+              materials:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    quantity:
+                      type: integer
+                    type:
+                      $ref: "#/components/schemas/TypeDetails"
+              products:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    probability:
+                      type: number
+                    quantity:
+                      type: integer
+                    type:
+                      $ref: "#/components/schemas/TypeDetails"
+              skills:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    level:
+                      type: integer
+                    type:
+                      $ref: "#/components/schemas/TypeDetails"
+              time:
+                type: integer
+        bp_type:
+          type: string
+          enum: ["original", "copy", "relic"]
+        item_id:
+          type: integer
+        location:
+          $ref: "#/components/schemas/LocationDetails"
+        material_efficiency:
+          type: integer
+        max_production_limit:
+          type: integer
+        quantity:
+          type: integer
+        runs:
+          type: integer
+        time_efficiency:
+          type: integer
+        type:
+          $ref: "#/components/schemas/TypeDetails"
+    
+    StationBlueprint:
+      type: array
+      items:
+        type: object
+        properties:
+          bp_counts:
+            type: object
+            properties:
+              divisions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    count:
+                      type: integer
+                      example: 216
+                    division:
+                      type: string
+                      enum: ["CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7"]
+                      example: "CorpSAG7"
+              station:
+                type: integer
+                example: 216
+          location_type:
+            type: string
+            enum: ["system"]
+            example: "system"
+          name:
+            type: string
+            example: "Alentene - IChooseYou Market and Industry"
+          office:
+            type: object
+            properties:
+              location_id:
+                type: integer
+                example: 1034503382954
+              name:
+                type: string
+                nullable: true
+                example: null
+              type:
+                allOf:
+                - $ref: "#/components/schemas/TypeDetails"
+                - example:
+                    group:
+                      category:
+                        id: 3
+                        name: Station
+                      id: 16
+                      name: Station Services
+                    id: 27
+                    market_group: null
+                    mass: null
+                    name: Office
+                    portion_size: 1
+                    volume: 1
+          owner_id:
+            type: integer
+            example: 98425418
+          station_id:
+            type: integer
+            example: 1032903563769
+          system_id:
+            type: integer
+            example: 30005304
+          type:
+            allOf:
+            - $ref: "#/components/schemas/TypeDetails"
+            - example:
+                group:
+                  category:
+                    id: 65
+                    name: Structure
+                  id: 1404
+                  name: Engineering Complex
+                id: 35827
+                market_group:
+                  id: 2324
+                  name: Engineering Complex
+                  parent:
+                    id: 477
+                    name: Structures
+                mass: 50000000000.0
+                name: Sotiyo
+                portion_size: 1
+                volume: 800000.0
+      
+    LocationBlueprint:
+      type: object
+      properties:
+        blueprints:
+          type: array
+          items:
+            allOf:
+            - $ref: "#/components/schemas/BlueprintDetails"
+            - example:
+                activities:
+                  - activity_type: invention
+                    materials:
+                      - quantity: 3
+                        type:
+                          group:
+                            category:
+                              id: 17
+                              name: Commodity
+                            id: 333
+                            name: Datacores
+                          id: 20412
+                          market_group:
+                            id: 1880
+                            name: Datacores
+                            parent:
+                              id: 1872
+                              name: Research Equipment
+                              parent:
+                                id: 475
+                                name: Manufacture & Research
+                          mass: 1
+                          name: Datacore - Plasma Physics
+                          portion_size: 1
+                          volume: 0.1
+                      - quantity: 3
+                        type:
+                          group:
+                            category:
+                              id: 17
+                              name: Commodity
+                            id: 333
+                            name: Datacores
+                          id: 20424
+                          market_group:
+                            id: 1880
+                            name: Datacores
+                            parent:
+                              id: 1872
+                              name: Research Equipment
+                              parent:
+                                id: 475
+                                name: Manufacture & Research
+                          mass: 1
+                          name: Datacore - Mechanical Engineering
+                          portion_size: 1
+                          volume: 0.1
+                    products:
+                      - probability: 0.21
+                        quantity: 10
+                        type:
+                          group:
+                            category:
+                              id: 9
+                              name: Blueprint
+                            id: 1309
+                            name: Tactical Destroyer Blueprint
+                          id: 34318
+                          market_group: null
+                          mass: null
+                          name: Confessor Blueprint
+                          portion_size: 1
+                          volume: 0.01
+                      - probability: 0.21
+                        quantity: 10
+                        type:
+                          group:
+                            category:
+                              id: 9
+                              name: Blueprint
+                            id: 1309
+                            name: Tactical Destroyer Blueprint
+                          id: 34563
+                          market_group: null
+                          mass: null
+                          name: Svipul Blueprint
+                          portion_size: 1
+                          volume: 0.01
+                      - probability: 0.21
+                        quantity: 10
+                        type:
+                          group:
+                            category:
+                              id: 9
+                              name: Blueprint
+                            id: 1309
+                            name: Tactical Destroyer Blueprint
+                          id: 34829
+                          market_group: null
+                          mass: null
+                          name: Jackdaw Blueprint
+                          portion_size: 1
+                          volume: 0.01
+                      - probability: 0.21
+                        quantity: 10
+                        type:
+                          group:
+                            category:
+                              id: 9
+                              name: Blueprint
+                            id: 1309
+                            name: Tactical Destroyer Blueprint
+                          id: 35684
+                          market_group: null
+                          mass: null
+                          name: Hecate Blueprint
+                          portion_size: 1
+                          volume: 0.01
+                    skills:
+                      - level: 1
+                        type:
+                          group:
+                            category:
+                              id: 16
+                              name: Skill
+                            id: 270
+                            name: Science
+                          id: 3408
+                          market_group:
+                            id: 375
+                            name: Science
+                            parent:
+                              id: 150
+                              name: Skills
+                          mass: null
+                          name: Sleeper Encryption Methods
+                          portion_size: 1
+                          volume: 0.01
+                      - level: 1
+                        type:
+                          group:
+                            category:
+                              id: 16
+                              name: Skill
+                            id: 270
+                            name: Science
+                          id: 11441
+                          market_group:
+                            id: 375
+                            name: Science
+                            parent:
+                              id: 150
+                              name: Skills
+                          mass: null
+                          name: Plasma Physics
+                          portion_size: 1
+                          volume: 0.01
+                      - level: 1
+                        type:
+                          group:
+                            category:
+                              id: 16
+                              name: Skill
+                            id: 270
+                            name: Science
+                          id: 11452
+                          market_group:
+                            id: 375
+                            name: Science
+                            parent:
+                              id: 150
+                              name: Skills
+                          mass: null
+                          name: Mechanical Engineering
+                          portion_size: 1
+                          volume: 0.01
+                    time: 3600
+                bp_type: relic
+                item_id: 1031575738636
+                location:
+                  flag: CorpSAG7
+                  location_id: 1034503382954
+                  name: null
+                  parent:
+                    flag: OfficeFolder
+                    location_id: 1032903563769
+                    type: item
+                  type:
+                    group:
+                      category:
+                        id: 3
+                        name: Station
+                      id: 16
+                      name: Station Services
+                    id: 27
+                    market_group: null
+                    mass: null
+                    name: Office
+                    portion_size: 1
+                    volume: 1
+                material_efficiency: 0
+                max_production_limit: 300
+                quantity: 1
+                runs: 0
+                time_efficiency: 0
+                type:
+                  group:
+                    category:
+                      id: 34
+                      name: Ancient Relics
+                    id: 997
+                    name: Sleeper Hull Relics
+                  id: 34414
+                  market_group:
+                    id: 1909
+                    name: Ancient Relics
+                    parent:
+                      id: 1872
+                      name: Research Equipment
+                      parent:
+                        id: 475
+                        name: Manufacture & Research
+                  mass: null
+                  name: Small Malfunctioning Hull Section
+                  portion_size: 1
+                  volume: 20
+        locations:
+          type: array
+          items:
+            type: object
+            properties:
+              bp_count:
+                type: integer
+                example: 221
+              location_id:
+                type: integer
+                example: 1027383972104
+              name:
+                type: string
+                example: "Turrets"
+              parent:
+                type: object
+                properties:
+                  flag:
+                    type: string
+                    enum: ["CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7"]
+                    example: "CorpSAG7"
+                  location_id:
+                    type: integer
+                    example: 1034503382954
+                  type:
+                    type: string
+                    example: "item"
+              type:
+                allOf:
+                - $ref: "#/components/schemas/TypeDetails"
+                - example:
+                    group:
+                      category:
+                        id: 2
+                        name: Celestial
+                      id: 448
+                      name: Audit Log Secure Container
+                    id: 17363
+                    market_group:
+                      id: 1652
+                      name: Audit Log Containers
+                      parent:
+                        id: 379
+                        name: Cargo Containers
+                        parent:
+                          id: 404
+                          name: Deployable Structures
+                          parent:
+                            id: 477
+                            name: Structures
+                    mass: 10000
+                    name: Small Audit Log Secure Container
+                    portion_size: 1
+                    volume: 100
+    ProdChain:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              node_id:
+                type: integer
+                example: 11578
+              type:
+                allOf:
+                - $ref: "#/components/schemas/TypeDetails"
+                - example:
+                    id: 12105
+                    name: Covert Ops Cloaking Device II Blueprint
+                    group:
+                      id: 401
+                      name: Cloaking Device Blueprint
+                      category:
+                        id: 9
+                        name: Blueprint
+                    market_group: null
+                    mass: null
+                    volume: 0.01
+                    portion_size: 1
+              product:
+                type: object
+                properties:
+                  type:
+                    allOf:
+                    - $ref: "#/components/schemas/TypeDetails"
+                    - example:
+                        id: 11578
+                        name: Covert Ops Cloaking Device II
+                        group:
+                          id: 330
+                          name: Cloaking Device
+                          category:
+                            id: 7
+                            name: Module
+                        market_group:
+                          id: 675
+                          name: Cloaking Devices
+                          parent:
+                            id: 656
+                            name: Electronics and Sensor Upgrades
+                            parent:
+                              id: 9
+                              name: Ship Equipment
+                        mass: null
+                        volume: 100
+                        portion_size: 1
+                  quantity:
+                    type: integer
+                    example: 1
+                  probability:
+                    type: number
+                    example: 1.0
+              activity:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ["purchase", "manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
+                    example: "manufacturing"
+                  time:
+                    type: integer
+                    example: 11700
+              output_units:
+                type: number
+                example: 1.0
+              output_runs:
+                type: number
+                example: 1.0
+              items:
+                type: object
+                properties:
+                  options:
+                    type: object
+                  selected:
+                    type: integer
+                    example: 1031479997011
+              prod_time:
+                type: number
+                example: 11232.0
+              available_units:
+                type: number
+                example: 0
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              link_id:
+                type: string
+                example: "34-11370"
+              source:
+                type: integer
+                example: 34
+              target:
+                type: integer
+                example: 11370
+              material:
+                type: object
+                properties:
+                  type:
+                    allOf:
+                    - $ref: "#/components/schemas/TypeDetails"
+                    - example:
+                        id: 34
+                        name: Tritanium
+                        group:
+                          id: 18
+                          name: Mineral
+                          category:
+                            id: 4
+                            name: Material
+                        market_group:
+                          id: 1857
+                          name: Minerals
+                          parent:
+                            id: 533
+                            name: Materials
+                            parent:
+                              id: 475
+                              name: Manufacture & Research
+                        mass: null
+                        volume: 0.01
+                        portion_size: 1
+                  quantity:
+                    type: integer
+                    example: 16253
+              target_runs:
+                type: number
+                example: 1.0
+              target_me:
+                type: integer
+                example: 10
+              target_process:
+                type: string
+                enum: ["purchase", "manufacturing", "invention", "copying", "research_material", "research_time", "reaction"]
+                example: "manufacturing"
+              units:
+                type: number
+                example: 14628
+              available_units:
+                type: integer
+                example: 0

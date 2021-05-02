@@ -20,22 +20,37 @@ const scalePathOptions = [{
 
 const legendItems = ['purchase', 'manufacturing', 'copying', 'invention'];
 
-const ProdChainHeader = ({outputUnits, updateOutputUnits, scalePath, updateScalePath, station, updateStation}) => {
+const ProdChainHeader = ({outputUnits, updateOutputUnits, scalePath, updateScalePath, station, updateStation, updateBlueprintItems}) => {
   const {data, status} = useQuery(['fetchBlueprintLocation'], fetchBlueprintLocation);
 
   return <div>
     <Row>
       <Col xs={6}><h3>Production Chain Diagram</h3></Col>
-      <Col xs={6}>
-        {status === 'success' && <Dropdown>
-          <Dropdown.Toggle variant='secondary'>{station.name}</Dropdown.Toggle>
-          <Dropdown.Menu>
-            {data.data.locations.map((location) => <Dropdown.Item
-              key={location.station_id}
-              onClick={() => updateStation({id: location.station_id, name: location.name})}
-            >{location.name}</Dropdown.Item>)}
-          </Dropdown.Menu>
-        </Dropdown>}
+      <Col xs='auto'>
+        {status === 'success' && <InputGroup>
+          <InputGroup.Prepend>
+            <InputGroup.Text>Station</InputGroup.Text>
+          </InputGroup.Prepend>
+          <Dropdown style={{border: '1px solid #000000'}}>
+            <Dropdown.Toggle variant='secondary'>{station.name}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                key={-1}
+                onClick={() => {
+                  updateBlueprintItems(null);
+                  updateStation({id: null, name: 'No Station Selected'});
+                }}
+              >No Station Selected</Dropdown.Item>
+              {data.data.map((location) => <Dropdown.Item
+                key={location.station_id}
+                onClick={() => {
+                  updateBlueprintItems(null);
+                  updateStation({id: location.station_id, name: location.name});
+                }}
+              >{location.name}</Dropdown.Item>)}
+            </Dropdown.Menu>
+          </Dropdown>
+        </InputGroup>}
       </Col>
     </Row>
     <Row>

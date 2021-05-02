@@ -15,10 +15,10 @@ COPY ./requirements.txt ./
 RUN pip install -r requirements.txt \
     && rm requirements.txt
 
-COPY ./nea_MarketDataApi ./nea_MarketDataApi/
-COPY ./run.py ./
+COPY ./spec.yml ./
 COPY ./config/ ./config/
+COPY ./nea_MarketDataApi ./nea_MarketDataApi/
 
 VOLUME /srv/app/config.py
 
-CMD ["python", "run.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "nea_MarketDataApi:app"]

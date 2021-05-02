@@ -54,7 +54,7 @@ const expandRowTemplate = {
 const queryWrapper = (Component) => (props) => {
   const queryFilter = {search: props.search, type: props.type};
   const {data, status} = useQuery(['fetchBlueprintLocation', queryFilter], fetchBlueprintLocation);
-  return status === 'success' ? <Component {...props} locations={data.data.locations} /> : <Loading />;
+  return status === 'success' ? <Component {...props} locations={data.data} /> : <Loading />;
 };
 
 const StationTable = ({locations, search, type}) => {
@@ -67,18 +67,16 @@ const StationTable = ({locations, search, type}) => {
     />,
   };
 
-  return <div>
-    <BootstrapTable
-      columns={columns}
-      data={locations}
-      defaultSorted={defaultSorted}
-      expandRow={expandRow}
-      keyField='station_id'
-      bootstrap4
-      hover
-      pagination={paginationFactory()}
-    />
-  </div>;
+  return <BootstrapTable
+    columns={columns}
+    data={locations}
+    defaultSorted={defaultSorted}
+    expandRow={expandRow}
+    keyField='station_id'
+    bootstrap4
+    hover
+    pagination={paginationFactory()}
+  />;
 };
 
 export default queryWrapper(StationTable);

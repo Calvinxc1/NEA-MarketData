@@ -13,8 +13,8 @@ def build_market_node(type_item, output_units):
         'output_units': output_units,
         'output_runs': output_units,
         'items': {
-            'options': {},
-            'selected': -1,
+            'options': [],
+            'selected': {},
         },
         'prod_time': 0,
     }

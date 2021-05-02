@@ -8,11 +8,15 @@ def extract_asset_count(conn, type_id, station_ids):
     assets = [{
         'item_id': asset_item.item_id,
         'type': parse_type(asset_item.type),
-        'parent_station': extract_parent_station(conn, asset_item.parent),
+        'parent_station_id': extract_parent_station(conn, asset_item.parent)['station_id']\
+            if asset_item.parent else asset_item.location_id
+        ,
         'quantity': asset_item.quantity,
     } for asset_item in asset_items]
+    
     asset_count = sum([
         asset['quantity'] for asset in assets
-        if asset['parent_station']['station_id'] in station_ids
+        if asset['parent_station_id'] in station_ids
     ])
+    
     return asset_count
