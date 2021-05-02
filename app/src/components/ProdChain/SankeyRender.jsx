@@ -69,6 +69,8 @@ class SankeyRender extends React.Component {
       maxDepth = 0;
     }
 
+    console.log(this.props.data);
+
     return <div>
       <svg width="100%" height="900" ref={this.svgRef}>
         <g>

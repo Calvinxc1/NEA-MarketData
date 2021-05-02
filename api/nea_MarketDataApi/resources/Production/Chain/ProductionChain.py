@@ -32,3 +32,5 @@ class ProductionChain(Root):
         links = [link for link in links.values()]
         
         return self._build_response(req, {'data': {'nodes': nodes, 'links': links}})
+    
+    
