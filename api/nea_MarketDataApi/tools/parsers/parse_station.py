@@ -8,5 +8,6 @@ def parse_station(station_item):
         'system_id': station_item.planet.system_id,
         'location_type': 'system',
         'owner_id': station_item.owner_id,
+        'industry': {},
     }
     return station

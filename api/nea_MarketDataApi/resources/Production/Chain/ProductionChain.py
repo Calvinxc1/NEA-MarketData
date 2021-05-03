@@ -4,7 +4,7 @@ import json as js
 from nea_schema.maria.sde.bp import Product
 
 from ...Root import Root
-from .helpers import extract_sankey_elements
+from .extract_sankey_elements import extract_sankey_elements
 
 class ProductionChain(Root):
     def get(self, type_id):

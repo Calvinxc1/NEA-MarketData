@@ -2,18 +2,18 @@ from nea_schema.maria.sde.bp import Product
 from nea_schema.maria.sde.inv import Type
 from nea_schema.maria.esi.corp import CorpBlueprint
 
-from .build_market_node import build_market_node
-from .extract_asset_count import extract_asset_count
-from .extract_blueprint_items import extract_blueprint_items
-from .merge_link import merge_link
-from .merge_node import merge_node
-from .parse_copy_node import parse_copy_node
-from .parse_invent_link import parse_invent_link
-from .parse_invent_bp_link import parse_invent_bp_link
-from .parse_link import parse_link
-from .parse_node import parse_node
-from .select_blueprint import select_blueprint
-from .....tools.extractors import extract_blueprints_info
+#from .build_market_node import build_market_node
+#from .extract_asset_count import extract_asset_count
+#from .extract_blueprint_items import extract_blueprint_items
+#from .merge_link import merge_link
+#from .merge_node import merge_node
+#from .parse_copy_node import parse_copy_node
+#from .parse_invent_link import parse_invent_link
+#from .parse_invent_bp_link import parse_invent_bp_link
+#from .parse_link import parse_link
+#from .parse_node import parse_node
+#from .select_blueprint import select_blueprint
+#from .....tools.extractors import extract_blueprints_info
 
 def extract_sankey_elements(conn, product_items, output_units, station_ids=[], bp_items={}, ignore_activity=['reaction']):
     nodes = {}
@@ -90,7 +90,7 @@ def extract_invent(conn, product_item, node, blueprints, station_ids, bp_items, 
         if activity.activity_type == 'copying'
     ]
 
-    if len(copy_activity_items) == 1:
+    if copy_activity_items:
         copy_activity_item = copy_activity_items[0]
         copy_blueprints = [blueprint for blueprint in blueprints if blueprint['bp_type'] in ['original', 'placeholder']]
         copy_selection = select_blueprint(copy_blueprints, bp_items.get(copy_activity_item.blueprint_id))
