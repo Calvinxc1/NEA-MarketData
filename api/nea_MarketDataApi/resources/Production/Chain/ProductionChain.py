@@ -2,7 +2,7 @@ from flask import request
 
 from nea_schema.maria.sde.bp import Product
 
-from .helpers import extract_available_materials, parse_chain_elements
+from .helpers import build_chain_elements, extract_available_materials
 from ...Root import Root
 
 class ProductionChain(Root):
@@ -19,7 +19,7 @@ class ProductionChain(Root):
             if req.parameters.query.get('ignore_activity[]') else ['reaction']
         
         conn = self._maria_connect()
-        nodes, links = parse_chain_elements(conn, type_id, output_units, station_ids, ignore_activity)
+        nodes, links = build_chain_elements(conn, type_id, output_units, station_ids, ignore_activity)
         available_materials = extract_available_materials(conn, links, station_ids)
         conn.close()
         

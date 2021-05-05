@@ -1,7 +1,7 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
 import numeral from 'numeral';
@@ -9,8 +9,16 @@ import numeral from 'numeral';
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
 import ChainNodeMaterials from './ChainNodeMaterials.jsx';
 import ChainNodeProducts from './ChainNodeProducts.jsx';
+import ProcessIcon from './ProcessIcon.jsx';
 
-const ChainNodeInfo = ({node, bp_items, updateBlueprintItems}) => <Alert variant='info' style={{backgroundColor: '#204060'}}>
+const ChainNodeInfo = ({node}) => <Alert variant='info' style={{backgroundColor: '#204060'}}>
+  <Button variant='primary' style={{width: '100%'}}>
+    <Row>
+      {node.process.map((proc, i) => <Col key={i} xs='1'>
+        <ProcessIcon process={proc} />
+      </Col>)}
+    </Row>
+  </Button>
   <hr />
   <Row>
     <Col xs='6'>

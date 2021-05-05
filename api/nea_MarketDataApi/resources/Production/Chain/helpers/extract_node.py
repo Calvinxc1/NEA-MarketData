@@ -19,7 +19,7 @@ def extract_node(conn, type_id, output_units, station_ids, ignore_activity):
         'materials': {},
     }
     
-    product_items = conn.query(Product).filter(Product.type_id == type_id)\
+    product_items = conn.query(Product).filter_by(type_id=type_id)\
         .filter(Product.activity_type.notin_(ignore_activity))
     
     if product_items.count() == 0:
@@ -43,7 +43,9 @@ def extract_node(conn, type_id, output_units, station_ids, ignore_activity):
             
         chance = min(1, calc_invent_chance(process['product']['probability']))
         units_per_run = process['product']['quantity'] * chance
-        max_units_per_batch = process['blueprint']['max_production_limit'] * units_per_run
+        max_units_per_batch = process['blueprint']['max_production_limit'] * units_per_run\
+            if process['blueprint']['bp_type'] != 'original'\
+            else inf
         while remaining_runs > 0:
             batch_units = min(remaining_units, remaining_runs * units_per_run, max_units_per_batch)
             batch_runs = batch_units / units_per_run

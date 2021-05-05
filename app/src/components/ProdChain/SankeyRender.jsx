@@ -44,6 +44,8 @@ class SankeyRender extends React.Component {
     const {nodes, links} = this.sankey ? this.sankey(this.props.data) : {};
     const maxDepth = nodes ? nodes.reduce((acc, node) => node.depth > acc ? node.depth : acc, 0) : 0;
 
+    console.log(nodes, links);
+
     return <div>
       <svg width="100%" height="900" ref={this.svgRef}><g>
         <rect

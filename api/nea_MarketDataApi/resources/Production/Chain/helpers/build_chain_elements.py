@@ -6,14 +6,14 @@ from .extract_link import extract_link
 from .extract_copy_node import extract_copy_node
 from .....tools.parsers import parse_type
 
-def parse_chain_elements(conn, type_id, output_units, station_ids, ignore_activity):
+def build_chain_elements(conn, type_id, output_units, station_ids, ignore_activity):
     node = extract_node(conn, type_id, output_units, station_ids, ignore_activity)
     nodes = {node['node_id']:node}
     links = {}
     for material in node['materials']:
         link = extract_link(conn, material, node)
         links[link['link_id']] = link
-        sub_nodes, sub_links = parse_chain_elements(
+        sub_nodes, sub_links = build_chain_elements(
             conn,
             material['type_id'],
             material['quantity'],
@@ -29,16 +29,16 @@ def parse_chain_elements(conn, type_id, output_units, station_ids, ignore_activi
         blueprint_runs[bp_type_id] = blueprint_runs.get(bp_type_id, 0) + process['batch']['runs']
         
     for bp_type_id, runs in blueprint_runs.items():
-        invent_nodes, invent_links = parse_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_activity)
+        invent_nodes, invent_links = build_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_activity)
         nodes, links = combine_elements(conn, nodes, links, invent_nodes, invent_links, station_ids, ignore_activity)
         
     return nodes, links
 
-def parse_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_activity):
+def build_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_activity):
     invent_nodes = {}
     invent_links = {}
 
-    sub_nodes, sub_links = parse_chain_elements(conn, bp_type_id, runs, station_ids, ignore_activity)
+    sub_nodes, sub_links = build_chain_elements(conn, bp_type_id, runs, station_ids, ignore_activity)
     if sub_links:
         manufacture_link = {
             'link_id': '{}-{}'.format(bp_type_id, type_id),
@@ -65,7 +65,7 @@ def parse_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_a
         )
 
         for copy_type_id, quantity in bpc_materials.items():
-            copy_nodes, copy_links = parse_copy_elements(
+            copy_nodes, copy_links = build_copy_elements(
                 conn, bp_type_id, copy_type_id, quantity, station_ids, ignore_activity
             )
             invent_nodes, invent_links = combine_elements(
@@ -73,7 +73,7 @@ def parse_invent_elements(conn, type_id, bp_type_id, runs, station_ids, ignore_a
             )
     return invent_nodes, invent_links
 
-def parse_copy_elements(conn, bp_type_id, copy_type_id, quantity, station_ids, ignore_activity):
+def build_copy_elements(conn, bp_type_id, copy_type_id, quantity, station_ids, ignore_activity):
     invent_link = {
         'link_id': '{}-{}'.format(copy_type_id, bp_type_id),
         'source': copy_type_id,
@@ -90,7 +90,7 @@ def parse_copy_elements(conn, bp_type_id, copy_type_id, quantity, station_ids, i
     for material in copy_node['materials']:
         copy_link = extract_link(conn, material, copy_node)
         copy_links[copy_link['link_id']] = copy_link
-        sub_nodes, sub_links = parse_chain_elements(
+        sub_nodes, sub_links = build_chain_elements(
             conn,
             material['type_id'],
             material['quantity'],
@@ -106,7 +106,7 @@ def combine_elements(conn, current_nodes, current_links, new_nodes, new_links, s
     for node_id, node in new_nodes.items():
         if node_id in current_nodes:
             new_output_units = current_nodes[node_id]['output_units'] + node['output_units']
-            recalc_nodes, recalc_links = parse_chain_elements(
+            recalc_nodes, recalc_links = build_chain_elements(
                 conn, node_id, new_output_units,
                 station_ids, ignore_activity,
             )

@@ -3,13 +3,13 @@ from nea_schema.maria.sde.bp import Product
 from .calc_efficiency_ratio import calc_efficiency_ratio
 from .....tools.parsers import parse_blueprint_product, parse_type
 
-def parse_placeholder(product_items):
+def parse_placeholder(product_items, invention=False):
     placeholder = sorted([{
         'blueprint': {
             'item_id': product_item.blueprint_id,
             'type': parse_type(product_item.activity.blueprint.type),
-            'material_efficiency': 2 if product_item.activity.activity_type == 'invention' else 0,
-            'time_efficiency': 4 if product_item.activity.activity_type == 'invention' else 0,
+            'material_efficiency': 2 if invention else 0,
+            'time_efficiency': 4 if invention else 0,
             'quantity': 0,
             'runs': -1,
             'max_production_limit': product_item.activity.blueprint.max_production_limit,
