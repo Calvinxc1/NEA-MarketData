@@ -25,12 +25,12 @@ const columns = [{
   text: 'Material',
   sort: true,
 },{
-  dataField: 'units',
-  text: 'Output Units',
+  dataField: 'quantity',
+  text: 'Units',
   sort: true,
   align: 'right',
   headerAlign: 'center',
-  formatter: (units) => numeral(units).format('0,0.00'),
+  formatter: (quantity) => numeral(quantity).format('0,0.00'),
 },{
   dataField: 'output_ratio',
   text: 'Output %',
@@ -42,11 +42,11 @@ const columns = [{
 
 const defaultSorted = [{dataField: 'target.type.id', order: 'asc'}];
 
-const parseProducts = (products) => products.map(({target:{type}, units, source:{output_units}}) => {
-  return {type, units, output_ratio: units / output_units};
+const parseProducts = (products) => products.map(({target:{type}, quantity, source:{output_units}}) => {
+  return {type, quantity, output_ratio: quantity / output_units};
 });
 
-const SankeyInfoNodeProducts = ({products}) => <BootstrapTable
+const ChainNodeProducts = ({products}) => <BootstrapTable
   columns={columns}
   data={parseProducts(products)}
   defaultSorted={defaultSorted}
@@ -56,4 +56,4 @@ const SankeyInfoNodeProducts = ({products}) => <BootstrapTable
   hover
 />;
 
-export default SankeyInfoNodeProducts;
+export default ChainNodeProducts;

@@ -2,21 +2,21 @@ import * as d3 from 'd3';
 
 const dotParse = (obj, path) => path.split('.').reduce((o, i) => o[i], obj);
 
-const scaleParsing = (link, direction, scalePath) => {
-  const scaler = link[direction][`${direction}Links`].reduce((p, c) => p + dotParse(c, scalePath), 0);
+const scaleParsing = (link, direction, linkWeightPath) => {
+  const scaler = link[direction][`${direction}Links`].reduce((p, c) => p + dotParse(c, linkWeightPath), 0);
   const startScale = link[direction][`${direction}Links`].filter((e) => e.y0 < link.y0)
-    .map((srcLink) => dotParse(srcLink, scalePath) / scaler)
+    .map((srcLink) => dotParse(srcLink, linkWeightPath) / scaler)
     .reduce((a,b) => a+b, 0);
 
-  const endScale = startScale + dotParse(link, scalePath) / scaler;
+  const endScale = startScale + dotParse(link, linkWeightPath) / scaler;
   const scaleRange = link[direction].y1 - link[direction].y0;
 
   return [startScale, endScale, scaleRange];
 }
 
-const sankeyLinkArea = (link, scalePath='units') => {
-  const [sourceStartScale, sourceEndScale, sourceScaleRange] = scaleParsing(link, 'source', scalePath);
-  const [targetStartScale, targetEndScale, targetScaleRange] = scaleParsing(link, 'target', scalePath);
+const sankeyLinkArea = (link, linkWeightPath='quantity') => {
+  const [sourceStartScale, sourceEndScale, sourceScaleRange] = scaleParsing(link, 'source', linkWeightPath);
+  const [targetStartScale, targetEndScale, targetScaleRange] = scaleParsing(link, 'target', linkWeightPath);
 
   const points = [{
     x: link.source.x1,

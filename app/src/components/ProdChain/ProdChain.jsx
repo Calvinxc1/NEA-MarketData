@@ -1,56 +1,32 @@
 import React from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
-import {Provider} from 'react-redux';
+import {useQuery} from 'react-query';
+import {connect} from 'react-redux';
 
+import fetchProductionChain from './../../fetchers/fetchProductionChain.js';
 import SankeyRender from './SankeyRender.jsx';
 import ProdChainHeader from './ProdChainHeader.jsx';
-import store from './store.js';
+import Loading from './../Loading/Loading.jsx';
+import ChainItemInfo from './ChainItemInfo.jsx';
 
-class ProdChain extends React.Component {
-  state = {
-    output_units: 1,
-    scalePath: {
-      value: 'units',
-      name: 'Quantity',
-    },
-    station: {
-      id: null,
-      name: 'No Station Selected',
-    },
-    bp_items: null,
+const queryWrapper = (Component) => (props) => {
+  const params = {
+    type_id: props.match.params.type_id,
+    output_units: props.runs,
+    station_ids: props.selectedStation ? [props.selectedStation.station_id] : [],
   };
+  const {data, status} = useQuery(['fetchProductionChain', params], fetchProductionChain);
+  return <Component {...props} data={data} status={status}/>;
+};
 
-  updateOutputUnits = (output_units) => this.setState({output_units});
+const ProdChain = ({data, status}) => <Jumbotron>
+  <ProdChainHeader />
+  {status === 'success' ? <SankeyRender data={data.data} /> : <Loading />}
+  <ChainItemInfo />
+</Jumbotron>;
 
-  updateScalePath = (scalePath) => this.setState({scalePath});
+const mapStateToProps = ({globalState:{selectedStation}, prodChain:{runs}}) => {
+  return {selectedStation, runs};
+};
 
-  updateStation = (station) => this.setState({station});
-
-  updateBlueprintItems = (bp_items) => this.setState({bp_items});
-
-  render() {
-    return <Jumbotron>
-      <ProdChainHeader
-        outputUnits={this.state.output_units}
-        updateOutputUnits={this.updateOutputUnits}
-        scalePath={this.state.scalePath}
-        updateScalePath={this.updateScalePath}
-        station={this.state.station}
-        updateBlueprintItems={this.updateBlueprintItems}
-        updateStation={this.updateStation}
-      />
-      <Provider store={store}>
-        <SankeyRender
-          type_id={this.props.match.params.type_id}
-          output_units={this.state.output_units}
-          station_ids={this.state.station.id ? [this.state.station.id] : []}
-          bp_items={this.state.bp_items}
-          scalePath={this.state.scalePath.value}
-          updateBlueprintItems={this.updateBlueprintItems}
-        />
-      </Provider>
-    </Jumbotron>;
-  }
-}
-
-export default ProdChain;
+export default connect(mapStateToProps)(queryWrapper(ProdChain));

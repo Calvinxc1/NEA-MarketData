@@ -2,53 +2,51 @@ import React from 'react';
 import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
-import sankeyLinkArea from './sankeyLinkArea.js'
-import storeMapper from './storeMapper.js';
+import sankeyLinkArea from './helpers/sankeyLinkArea.js'
+import {addHover, dropHover, setActiveElement} from './../../store/actions/prodChain.js';
 
 class SankeyLink extends React.Component {
   state = {
     baseColor: chroma('#777777'),
   };
 
-  hoverOn = () => {
-    this.props.dispatch({
-      type: 'ADD_HOVER',
-      payload: {hoverType: 'link', hoverId: this.props.link.link_id},
-    });
-  }
-
-  hoverOff = () => {
-    this.props.dispatch({type: 'DROP_HOVER'});
-  }
-
-  clickOn = () => this.props.dispatch({
-    type: 'ADD_CLICK',
-    payload: {clickType: 'link', clickId: this.props.link.link_id},
-  });
-
   checkHover = () => {
-    let hover = this.props.hoverType === 'link' && this.props.hoverId === this.props.link.link_id;
-    hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === this.props.link.source.node_id);
-    hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === this.props.link.target.node_id);
+    const {link, hoverType, hoverId} = this.props;
+
+    let hover = hoverType === 'link' && hoverId === link.link_id;
+    hover = hover || (hoverType === 'node' && hoverId === link.source.node_id);
+    hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
+
     return hover;
   }
 
-  checkClick = () => this.props.clickType === 'link' && this.props.clickId === this.props.link.link_id;
+  checkClick = () => {
+    const {link, activeElement} = this.props;
+    const click = activeElement.link_id === link.link_id;
+    return click;
+  }
 
   render() {
+    const {link, linkWeight, addHover, dropHover, setActiveElement} = this.props;
+    const {baseColor} = this.state;
+
     return <path
-      d={sankeyLinkArea(this.props.link, this.props.scalePath)}
-      fill={this.checkHover() ? this.state.baseColor.brighten(2).hex() : this.state.baseColor.hex()}
+      d={sankeyLinkArea(link, linkWeight.value)}
+      fill={this.checkHover() ? baseColor.brighten(2).hex() : baseColor.hex()}
       style={{
         opacity: '0.5',
         stroke: this.checkClick() ? '#FFFFFF' : '#000000',
         strokeWidth: this.checkClick() ? 3 : 1,
       }}
-      onMouseEnter={this.hoverOn}
-      onMouseLeave={this.hoverOff}
-      onClick={this.clickOn}
+      onMouseEnter={() => addHover('link', link.link_id)}
+      onMouseLeave={() => dropHover()}
+      onClick={() => setActiveElement(link)}
     />;
   }
 }
 
-export default connect(storeMapper)(SankeyLink);
+const mapStateToProps = ({prodChain:{hoverType, hoverId, activeElement, linkWeight}}) => {
+  return {hoverType, hoverId, activeElement, linkWeight};
+};
+
+export default connect(mapStateToProps, {addHover, dropHover, setActiveElement})(SankeyLink);

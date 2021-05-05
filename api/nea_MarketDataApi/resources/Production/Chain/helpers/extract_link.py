@@ -10,4 +10,5 @@ def extract_link(conn, material, node):
         'type': parse_type(conn.query(Type).filter_by(type_id=material['type_id']).one()),
         'quantity': material['quantity'],
     }
+    link['volume'] = link['quantity'] * link['type']['volume']
     return link

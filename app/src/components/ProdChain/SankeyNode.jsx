@@ -2,89 +2,89 @@ import React from 'react';
 import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
-import activityColor from './activityColor.js';
-import storeMapper from './storeMapper.js';
+import activityColor from './helpers/activityColor.js';
+import {addHover, dropHover, setActiveElement} from './../../store/actions/prodChain.js';
 
 class SankeyNode extends React.Component {
   state = {hover: false}
 
   constructor(props) {
     super(props);
-    this.state.baseColor = chroma(activityColor(this.props.node.activity.type));
+    this.state.baseColor = chroma(activityColor(props.node.process[0].activity.type));
   }
 
-  hoverOn = () => this.props.dispatch({
-    type: 'ADD_HOVER',
-    payload: {hoverType: 'node', hoverId: this.props.node.node_id},
-  });
-
-  hoverOff = () => this.props.dispatch({type: 'DROP_HOVER'});
-
-  clickOn = () => this.props.dispatch({
-    type: 'ADD_CLICK',
-    payload: {clickType: 'node', clickId: this.props.node.node_id},
-  });
-
   checkHover = () => {
-    let hover = this.props.hoverType === 'node' && this.props.hoverId === this.props.node.node_id;
-    this.props.node.sourceLinks.forEach((link) => {
-      hover = hover || (this.props.hoverType === 'link' && this.props.hoverId === link.link_id);
-      hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === link.source.node_id);
-      hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === link.target.node_id);
+    const {node, hoverType, hoverId} = this.props;
+
+    let hover = hoverType === 'node' && hoverId === node.node_id;
+    node.sourceLinks.forEach((link) => {
+      hover = hover || (hoverType === 'link' && hoverId === link.link_id);
+      hover = hover || (hoverType === 'node' && hoverId === link.source.node_id);
+      hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
     });
-    this.props.node.targetLinks.forEach((link) => {
-      hover = hover || (this.props.hoverType === 'link' && this.props.hoverId === link.link_id);
-      hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === link.source.node_id);
-      hover = hover || (this.props.hoverType === 'node' && this.props.hoverId === link.target.node_id);
+    node.targetLinks.forEach((link) => {
+      hover = hover || (hoverType === 'link' && hoverId === link.link_id);
+      hover = hover || (hoverType === 'node' && this.props.hoverId === link.source.node_id);
+      hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
     });
 
     return hover;
   }
 
-  checkClick = () => this.props.clickType === 'node' && this.props.clickId === this.props.node.node_id;
+  checkClick = () => {
+    const {node, activeElement} = this.props;
+    const click = activeElement.node_id === node.node_id;
+    return click;
+  }
 
   render() {
     const width = this.props.node.x1 - this.props.node.x0;
     const height = this.props.node.y1 - this.props.node.y0;
+    const {node, maxDepth, addHover, dropHover, setActiveElement} = this.props;
+    const {baseColor} = this.state;
 
-    return <g transform={`translate(${this.props.node.x0},${this.props.node.y0})`}>
-        <rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          fill={this.checkHover() ? this.state.baseColor.brighten(1).hex() : this.state.baseColor.hex()}
-          style={{
-            opacity: '0.5',
-            stroke: this.checkClick() ? '#FFFFFF' : '#000000',
-            strokeWidth: this.checkClick() ? 3 : 1,
-          }}
-          onMouseEnter={this.hoverOn}
-          onMouseLeave={this.hoverOff}
-          onClick={this.clickOn}
-        />
-        <defs>
-          <filter x="-0.01" y="-0.05" width="1.02" height="1.1" id={`${this.props.node.node_id}-fill`}>
-            <feFlood floodColor="#000000" result="bg" />
-            <feMerge>
-              <feMergeNode in="bg"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        <text
-          filter={`url(#${this.props.node.node_id}-fill)`}
-          x={this.props.maxDepth === this.props.node.depth ? -5 : width+5}
-          y={height/2}
-          fill={this.checkHover() ? this.state.baseColor.brighten(1).hex() : this.state.baseColor.darken(1).hex()}
-          textAnchor={this.props.maxDepth === this.props.node.depth ? 'end' : 'start'}
-          dominantBaseline="central"
-          onMouseEnter={this.hoverOn}
-          onMouseLeave={this.hoverOff}
-          onClick={this.clickOn}
-        >{this.props.node.product.type.name}</text>
+    return <g transform={`translate(${node.x0},${node.y0})`}>
+      <rect
+        x={0}
+        y={0}
+        width={width}
+        height={height}
+        fill={this.checkHover() ? baseColor.brighten(1).hex() : baseColor.hex()}
+        style={{
+          opacity: '0.5',
+          stroke: this.checkClick() ? '#FFFFFF' : '#000000',
+          strokeWidth: this.checkClick() ? 3 : 1,
+        }}
+        onMouseEnter={() => addHover('node', node.node_id)}
+        onMouseLeave={() => dropHover()}
+        onClick={() => setActiveElement(node)}
+      />
+      <defs>
+        <filter x="-0.01" y="-0.05" width="1.02" height="1.1" id={`${node.node_id}-fill`}>
+          <feFlood floodColor="#000000" result="bg" />
+          <feMerge>
+            <feMergeNode in="bg"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <text
+        filter={`url(#${node.node_id}-fill)`}
+        x={maxDepth === node.depth ? -5 : width+5}
+        y={height/2}
+        fill={this.checkHover() ? baseColor.brighten(1).hex() : baseColor.darken(1).hex()}
+        textAnchor={maxDepth === node.depth ? 'end' : 'start'}
+        dominantBaseline="central"
+        onMouseEnter={() => addHover('node', node.node_id)}
+        onMouseLeave={() => dropHover()}
+        onClick={() => setActiveElement(node)}
+      >{node.type.name}</text>
     </g>;
   }
 }
 
-export default connect(storeMapper)(SankeyNode);
+const mapStateToProps = ({prodChain:{hoverType, hoverId, activeElement}}) => {
+  return {hoverType, hoverId, activeElement};
+};
+
+export default connect(mapStateToProps, {addHover, dropHover, setActiveElement})(SankeyNode);

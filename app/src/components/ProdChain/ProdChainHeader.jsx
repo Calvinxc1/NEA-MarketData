@@ -6,27 +6,21 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
-import {useQuery} from 'react-query';
+import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
-import activityColor from './activityColor.js';
-import fetchBlueprintLocation from './../../fetchers/fetchBlueprintLocation.js';
-import Loading from './../Loading/Loading.jsx';
+import activityColor from './helpers/activityColor.js';
+import {setLinkWeight, setRuns, setActiveElement} from './../../store/actions/prodChain.js';
 
-const scalePathOptions = [{
-  value: 'units',
-  name: 'Quantity',
-},{
-  value: 'mat_vol',
+const linkWeightOptions = [{
+  value: 'volume',
   name: 'Volume',
+},{
+  value: 'quantity',
+  name: 'Quantity',
 }];
 
 const legendItems = ['purchase', 'manufacturing', 'copying', 'invention'];
-
-const queryWrapper = (Component) => (props) => {
-  const {data, status} = useQuery(['fetchBlueprintLocation'], fetchBlueprintLocation);
-  return status === 'success' ? <Component {...props} data={data.data} /> : <Loading />;
-};
 
 class ProdChainHeader extends React.Component {
   state = {modalShow: false};
@@ -35,36 +29,11 @@ class ProdChainHeader extends React.Component {
   closeModal = () => this.setState({modalShow: false});
 
   render() {
+    const {linkWeight, setLinkWeight, runs, setRuns, setActiveElement} = this.props;
+    const {modalShow} = this.state;
+
     return <div>
-      <Row>
-        <Col xs={6}><h3>Production Chain Diagram</h3></Col>
-        <Col xs='auto'>
-          <InputGroup>
-            <InputGroup.Prepend>
-              <InputGroup.Text>Station</InputGroup.Text>
-            </InputGroup.Prepend>
-            <Dropdown style={{border: '1px solid #000000'}}>
-              <Dropdown.Toggle variant='secondary'>{this.props.station.name}</Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  key={-1}
-                  onClick={() => {
-                    this.props.updateBlueprintItems(null);
-                    this.props.updateStation({id: null, name: 'No Station Selected'});
-                  }}
-                >No Station Selected</Dropdown.Item>
-                {this.props.data.map((location) => <Dropdown.Item
-                  key={location.station_id}
-                  onClick={() => {
-                    this.props.updateBlueprintItems(null);
-                    this.props.updateStation({id: location.station_id, name: location.name});
-                  }}
-                >{location.name}</Dropdown.Item>)}
-              </Dropdown.Menu>
-            </Dropdown>
-          </InputGroup>
-        </Col>
-      </Row>
+      <h3>Production Chain Diagram</h3>
       <Row>
         <Col xs='4'>
           {legendItems.map((legendItem) => <span key={legendItem}><span
@@ -77,7 +46,7 @@ class ProdChainHeader extends React.Component {
             style={{width: '100%'}}
             onClick={this.openModal}
           >Save to Queue</Button>
-          <Modal show={this.state.modalShow} onHide={this.closeModal}>
+          <Modal show={modalShow} onHide={this.closeModal}>
             <Modal.Header>
               <Modal.Title>Add to Production Queue</Modal.Title>
             </Modal.Header>
@@ -98,19 +67,22 @@ class ProdChainHeader extends React.Component {
             <FormControl
               type='number'
               min={1}
-              value={this.props.outputUnits}
-              onChange={(e) => this.props.updateOutputUnits(Number(e.target.value))}
+              value={runs}
+              onChange={(e) => {
+                setRuns(Number(e.target.value));
+                setActiveElement();
+              }}
             />
           </InputGroup>
         </Col>
         <Col xs='auto'>
           <Dropdown>
-            <Dropdown.Toggle>{this.props.scalePath.name}</Dropdown.Toggle>
+            <Dropdown.Toggle>{linkWeight.name}</Dropdown.Toggle>
             <Dropdown.Menu>
-              {scalePathOptions.map((pathOption) => <Dropdown.Item
-                key={pathOption.value}
-                onClick={() => this.props.updateScalePath(pathOption)}
-              >{pathOption.name}</Dropdown.Item>)}
+              {linkWeightOptions.map((linkWeightOption) => <Dropdown.Item
+                key={linkWeightOption.value}
+                onClick={() => setLinkWeight(linkWeightOption)}
+              >{linkWeightOption.name}</Dropdown.Item>)}
             </Dropdown.Menu>
           </Dropdown>
         </Col>
@@ -119,4 +91,8 @@ class ProdChainHeader extends React.Component {
   }
 }
 
-export default queryWrapper(ProdChainHeader);
+const mapStateToProps = ({prodChain:{linkWeight, runs}}) => {
+  return {linkWeight, runs};
+};
+
+export default connect(mapStateToProps, {setLinkWeight, setRuns, setActiveElement})(ProdChainHeader);

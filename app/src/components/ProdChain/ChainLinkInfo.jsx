@@ -7,26 +7,26 @@ import numeral from 'numeral';
 
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
 
-const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor: '#204060'}}>
+const ChainLinkInfo = ({link}) => <Alert variant='info' style={{backgroundColor: '#204060'}}>
   <h3><Image
     thumbnail
-    src={parseTypeImageUrl(link.material.type, 64,
-      link.material.type.group.category.id === 9 ? 'bpc'
-      : link.material.type.group.category.id === 34 ? 'relic'
+    src={parseTypeImageUrl(link.type, 64,
+      link.type.group.category.id === 9 ? 'bpc'
+      : link.type.group.category.id === 34 ? 'relic'
       : 'icon'
     )}
     style={{background: '#000000'}}
-  /> {link.material.type.name}</h3>
+  /> {link.type.name}</h3>
   <hr />
   <Row>
     <Col xs='6'>
       <p>
-        <b><u>Units</u></b>: {numeral(link.units).format('0,0.00')} ({numeral(link.available_units).format('0,0')} available)
+        <b><u>Units</u></b>: {numeral(link.quantity).format('0,0.00')} ({numeral(link.available_quantity).format('0,0')} available)
       </p>
     </Col>
     <Col xs='6'>
       <p>
-        <b><u>Total Volume</u></b>: {numeral(link.units * link.material.type.mass).format('0,0.00')} m<sup>3</sup>
+        <b><u>Total Volume</u></b>: {numeral(link.quantity * link.type.volume).format('0,0.00')} m<sup>3</sup>
       </p>
     </Col>
   </Row>
@@ -35,8 +35,7 @@ const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor
       <p>
         <Image
           thumbnail
-          src={link.source.activity.type === 'purchase' ? 'https://wiki.eveuniversity.org/images/9/9f/Market.png'
-          : parseTypeImageUrl(link.source.type, 64,
+          src={parseTypeImageUrl(link.source.type, 64,
             link.source.type.group.category.id === 9 ? 'bpc'
             : link.source.type.group.category.id === 34 ? 'relic'
             : 'icon'
@@ -61,4 +60,4 @@ const SankeyInfoLink = ({link}) => <Alert variant='info' style={{backgroundColor
   </Row>
 </Alert>;
 
-export default SankeyInfoLink;
+export default ChainLinkInfo;

@@ -25,28 +25,40 @@ const columns = [{
   text: 'Material',
   sort: true,
 },{
-  dataField: 'units',
+  dataField: 'quantity',
   text: 'Required',
   sort: true,
   align: 'right',
   headerAlign: 'center',
-  formatter: (units) => numeral(units).format('0,0.00'),
+  formatter: (quantity) => numeral(quantity).format('0,0.00'),
 },{
-  dataField: 'available_units',
+  dataField: 'available_quantity',
   text: 'Available',
   sort: true,
   align: 'right',
   headerAlign: 'center',
-  formatter: (available_units) => numeral(available_units).format('0,0'),
+  formatter: (available_quantity) => {
+    if(available_quantity) {
+      if(available_quantity <= 0) {
+        return <span>
+          {numeral(-available_quantity).format('0,0')} (BPo)
+        </span>;
+      } else {
+        return numeral(available_quantity).format('0,0');
+      }
+    } else {
+      return 0;
+    }
+  },
 }];
 
 const defaultSorted = [{dataField: 'type.id', order: 'asc'}];
 
-const parseMaterials = (materials) => materials.map(({material:{type}, units, available_units}) => {
-  return {type, units, available_units};
+const parseMaterials = (materials) => materials.map(({type, quantity, available_quantity}) => {
+  return {type, quantity, available_quantity};
 });
 
-const SankeyInfoNodeMaterials = ({materials}) => <BootstrapTable
+const ChainNodeMaterials = ({materials}) => <BootstrapTable
   columns={columns}
   data={parseMaterials(materials)}
   defaultSorted={defaultSorted}
@@ -56,4 +68,4 @@ const SankeyInfoNodeMaterials = ({materials}) => <BootstrapTable
   hover
 />;
 
-export default SankeyInfoNodeMaterials;
+export default ChainNodeMaterials;

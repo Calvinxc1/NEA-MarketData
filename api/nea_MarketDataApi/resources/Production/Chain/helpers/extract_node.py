@@ -27,10 +27,14 @@ def extract_node(conn, type_id, output_units, station_ids, ignore_activity):
         node['process_options'].append(extract_market_process(conn, type_id, output_units))
         return node
     
-    process_items = extract_process_items(conn, product_items, station_ids)
+    process_items = [
+        *extract_process_items(conn, product_items, station_ids),
+        parse_placeholder(product_items),
+    ]
+    
     remaining_units = output_units
-    for process in [*process_items, parse_placeholder(product_items)]:
-        if process['blueprint']['bp_type'] == 'original':
+    for process in process_items:
+        if process['blueprint']['bp_type'] in ['original', 'placeholder']:
             remaining_runs = inf
         elif process['blueprint']['bp_type'] == 'copy':
             remaining_runs = process['blueprint']['runs']
@@ -56,7 +60,7 @@ def extract_node(conn, type_id, output_units, station_ids, ignore_activity):
                     'runs': batch_runs,
                     'chance': chance,
                     'units': batch_units,
-                    'seconds': batch_seconds
+                    'seconds': batch_seconds,
                 },
             })
             
