@@ -3,14 +3,14 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import {useQuery} from 'react-query';
 
-import fetchBlueprintLocation from './../../fetchers/fetchBlueprintLocation.js';
+import getBlueprintLocation from './../../api/getBlueprintLocation.js';
 import numeral from 'numeral';
 import BlueprintLocationTable from './BlueprintLocationTable.jsx';
 import Loading from './../Loading/Loading.jsx';
 
 const StationTableExpanded = ({station:{station_id, office:{location_id}, bp_counts:{divisions}}, search, type}) => {
   const queryFilter = {location_id, search, type};
-  const {data, status} = useQuery(['fetchBlueprintLocation', queryFilter], fetchBlueprintLocation);
+  const {data, status} = useQuery(['getBlueprintLocation', queryFilter], getBlueprintLocation);
 
   return <Accordion>
     {divisions.map(({division, count}) => <Card key={`${station_id}-${division}`}>

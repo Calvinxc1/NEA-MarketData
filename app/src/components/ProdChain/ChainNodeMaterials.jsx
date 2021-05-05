@@ -30,7 +30,7 @@ const columns = [{
   sort: true,
   align: 'right',
   headerAlign: 'center',
-  formatter: (quantity) => numeral(quantity).format('0,0.00'),
+  formatter: (quantity) => numeral(quantity).format('0,0'),
 },{
   dataField: 'available_quantity',
   text: 'Available',

@@ -1,21 +1,21 @@
-export const addHover = (hoverType, hoverId) => ({
-  type: 'prodChain|addHover',
-  payload: {hoverType, hoverId},
+export const setActiveElement = (element={}) => ({
+  type: 'prodChain|setActiveElement',
+  payload: {element},
 });
 
-export const dropHover = () => ({type: 'prodChain|dropHover'});
+export const setHover = (type=null, id=null) => ({
+  type: 'prodChain|setHover',
+  payload: {type, id},
+});
 
-export const setLinkWeight = (linkWeight) => ({
+export const setLinkWeight = (linkWeight={value:'volume', name:'Volume'}) => ({
   type: 'prodChain|setLinkWeight',
   payload: {linkWeight},
 });
 
-export const setRuns = (runs) => ({
-  type: 'prodChain|setRuns',
-  payload: {runs},
+export const setUnits = (units=1) => ({
+  type: 'prodChain|setUnits',
+  payload: {units},
 });
 
-export const setActiveElement = (element={}) => ({
-  type: 'prodChain|setActiveElement',
-  payload: {element}
-});
+export const reset = () => ({type: 'prodChain|reset'});

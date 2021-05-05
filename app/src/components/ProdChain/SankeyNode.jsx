@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
 import activityColor from './helpers/activityColor.js';
-import {addHover, dropHover, setActiveElement} from './../../store/actions/prodChain.js';
+import {setActiveElement, setHover} from './../../store/actions/prodChain.js';
 
 class SankeyNode extends React.Component {
   state = {hover: false}
@@ -14,33 +14,33 @@ class SankeyNode extends React.Component {
   }
 
   checkHover = () => {
-    const {node, hoverType, hoverId} = this.props;
+    const {node, hover} = this.props;
 
-    let hover = hoverType === 'node' && hoverId === node.node_id;
+    let hovered = hover.type === 'node' && hover.id === node.node_id;
     node.sourceLinks.forEach((link) => {
-      hover = hover || (hoverType === 'link' && hoverId === link.link_id);
-      hover = hover || (hoverType === 'node' && hoverId === link.source.node_id);
-      hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
+      hovered = hovered || (hover.type === 'link' && hover.id === link.link_id);
+      hovered = hovered || (hover.type === 'node' && hover.id === link.source.node_id);
+      hovered = hovered || (hover.type === 'node' && hover.id === link.target.node_id);
     });
     node.targetLinks.forEach((link) => {
-      hover = hover || (hoverType === 'link' && hoverId === link.link_id);
-      hover = hover || (hoverType === 'node' && this.props.hoverId === link.source.node_id);
-      hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
+      hovered = hovered || (hover.type === 'link' && hover.id === link.link_id);
+      hovered = hovered || (hover.type === 'node' && hover.id === link.source.node_id);
+      hovered = hovered || (hover.type === 'node' && hover.id === link.target.node_id);
     });
 
-    return hover;
+    return hovered;
   }
 
   checkClick = () => {
     const {node, activeElement} = this.props;
-    const click = activeElement.node_id === node.node_id;
-    return click;
+    const clicked = activeElement.node_id === node.node_id;
+    return clicked;
   }
 
   render() {
     const width = this.props.node.x1 - this.props.node.x0;
     const height = this.props.node.y1 - this.props.node.y0;
-    const {node, maxDepth, addHover, dropHover, setActiveElement} = this.props;
+    const {node, maxDepth, setHover, setActiveElement} = this.props;
     const {baseColor} = this.state;
 
     return <g transform={`translate(${node.x0},${node.y0})`}>
@@ -55,8 +55,8 @@ class SankeyNode extends React.Component {
           stroke: this.checkClick() ? '#FFFFFF' : '#000000',
           strokeWidth: this.checkClick() ? 3 : 1,
         }}
-        onMouseEnter={() => addHover('node', node.node_id)}
-        onMouseLeave={() => dropHover()}
+        onMouseEnter={() => setHover('node', node.node_id)}
+        onMouseLeave={() => setHover()}
         onClick={() => setActiveElement(node)}
       />
       <defs>
@@ -75,16 +75,16 @@ class SankeyNode extends React.Component {
         fill={this.checkHover() ? baseColor.brighten(1).hex() : baseColor.darken(1).hex()}
         textAnchor={maxDepth === node.depth ? 'end' : 'start'}
         dominantBaseline="central"
-        onMouseEnter={() => addHover('node', node.node_id)}
-        onMouseLeave={() => dropHover()}
+        onMouseEnter={() => setHover('node', node.node_id)}
+        onMouseLeave={() => setHover()}
         onClick={() => setActiveElement(node)}
       >{node.type.name}</text>
     </g>;
   }
 }
 
-const mapStateToProps = ({prodChain:{hoverType, hoverId, activeElement}}) => {
-  return {hoverType, hoverId, activeElement};
+const mapStateToProps = ({prodChain:{hover, activeElement}}) => {
+  return {hover, activeElement};
 };
 
-export default connect(mapStateToProps, {addHover, dropHover, setActiveElement})(SankeyNode);
+export default connect(mapStateToProps, {setHover, setActiveElement})(SankeyNode);

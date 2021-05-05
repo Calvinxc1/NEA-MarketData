@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
 import sankeyLinkArea from './helpers/sankeyLinkArea.js'
-import {addHover, dropHover, setActiveElement} from './../../store/actions/prodChain.js';
+import {setActiveElement, setHover} from './../../store/actions/prodChain.js';
 
 class SankeyLink extends React.Component {
   state = {
@@ -11,23 +11,23 @@ class SankeyLink extends React.Component {
   };
 
   checkHover = () => {
-    const {link, hoverType, hoverId} = this.props;
+    const {link, hover} = this.props;
 
-    let hover = hoverType === 'link' && hoverId === link.link_id;
-    hover = hover || (hoverType === 'node' && hoverId === link.source.node_id);
-    hover = hover || (hoverType === 'node' && hoverId === link.target.node_id);
+    let hovered = hover.type === 'link' && hover.id === link.link_id;
+    hovered = hovered || (hover.type === 'node' && hover.id === link.source.node_id);
+    hovered = hovered || (hover.type === 'node' && hover.id === link.target.node_id);
 
-    return hover;
+    return hovered;
   }
 
   checkClick = () => {
     const {link, activeElement} = this.props;
-    const click = activeElement.link_id === link.link_id;
-    return click;
+    const clicked = activeElement.link_id === link.link_id;
+    return clicked;
   }
 
   render() {
-    const {link, linkWeight, addHover, dropHover, setActiveElement} = this.props;
+    const {link, linkWeight, setHover, setActiveElement} = this.props;
     const {baseColor} = this.state;
 
     return <path
@@ -38,15 +38,15 @@ class SankeyLink extends React.Component {
         stroke: this.checkClick() ? '#FFFFFF' : '#000000',
         strokeWidth: this.checkClick() ? 3 : 1,
       }}
-      onMouseEnter={() => addHover('link', link.link_id)}
-      onMouseLeave={() => dropHover()}
+      onMouseEnter={() => setHover('link', link.link_id)}
+      onMouseLeave={() => setHover()}
       onClick={() => setActiveElement(link)}
     />;
   }
 }
 
-const mapStateToProps = ({prodChain:{hoverType, hoverId, activeElement, linkWeight}}) => {
-  return {hoverType, hoverId, activeElement, linkWeight};
+const mapStateToProps = ({prodChain:{activeElement, hover, linkWeight}}) => {
+  return {hover, activeElement, linkWeight};
 };
 
-export default connect(mapStateToProps, {addHover, dropHover, setActiveElement})(SankeyLink);
+export default connect(mapStateToProps, {setActiveElement, setHover})(SankeyLink);

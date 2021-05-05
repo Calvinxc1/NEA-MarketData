@@ -1,7 +1,7 @@
 import React from 'react';
 import {useQuery} from 'react-query';
 
-import fetchBlueprintItem from './../../fetchers/fetchBlueprintItem.js';
+import getBlueprintItem from './../../api/getBlueprintItem.js';
 import BlueprintDetailsHeader from './BlueprintDetailsHeader.jsx';
 import BlueprintActivities from './BlueprintActivities.jsx';
 import Loading from './../Loading/Loading.jsx';
@@ -13,7 +13,7 @@ const allowedActivities = {
 };
 
 const BlueprintDetails = ({item_id, runs, updateRuns}) => {
-  const {data, status} = useQuery(['fetchBlueprintItem', {item_id}], fetchBlueprintItem);
+  const {data, status} = useQuery(['getBlueprintItem', {item_id}], getBlueprintItem);
 
   let activities = [];
   if(status === 'success') {

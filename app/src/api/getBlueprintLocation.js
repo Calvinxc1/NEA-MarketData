@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const fetchBlueprintLocation = async ({queryKey:[_key, {location_id, search, type}={}]}) => {
+const getBlueprintLocation = async ({queryKey:[_key, {location_id, search, type}={}]}) => {
   let path = `http://${window.location.host}/api/blueprint/location`;
   if(location_id) {path = `${path}/${location_id}`}
   let params = {};
@@ -10,4 +10,4 @@ const fetchBlueprintLocation = async ({queryKey:[_key, {location_id, search, typ
   return resp.data;
 }
 
-export default fetchBlueprintLocation;
+export default getBlueprintLocation;

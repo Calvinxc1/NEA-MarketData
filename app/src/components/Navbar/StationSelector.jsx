@@ -5,12 +5,12 @@ import Spinner from 'react-bootstrap/Spinner';
 import {useQuery} from 'react-query';
 import {connect} from 'react-redux';
 
-import fetchStations from './../../fetchers/fetchStations.js';
+import getStations from './../../api/getStations.js';
 import {updateStation} from './../../store/actions/globalState.js';
 import {setActiveElement} from './../../store/actions/prodChain.js';
 
 const queryWrapper = (Component) => (props) => {
-  const {data, status} = useQuery(['fetchStations'], fetchStations);
+  const {data, status} = useQuery(['getStations'], getStations);
   return <Component
     {...props}
     data={status === 'success' ? data.data : null}

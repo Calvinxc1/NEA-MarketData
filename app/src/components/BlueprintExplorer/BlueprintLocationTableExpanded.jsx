@@ -1,12 +1,12 @@
 import React from 'react';
 import {useQuery} from 'react-query';
 
-import fetchBlueprintLocation from './../../fetchers/fetchBlueprintLocation.js';
+import getBlueprintLocation from './../../api/getBlueprintLocation.js';
 import BlueprintLocationTable from './BlueprintLocationTable.jsx';
 import Loading from './../Loading/Loading.jsx';
 
 const BlueprintLocationTableExpanded = ({location:{location_id}, search, type}) => {
-  const {data, status} = useQuery(['fetchBlueprintLocation', {location_id, search, type}], fetchBlueprintLocation);
+  const {data, status} = useQuery(['getBlueprintLocation', {location_id, search, type}], getBlueprintLocation);
 
   return <div>
     {status === 'success' ? <BlueprintLocationTable
