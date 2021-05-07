@@ -5,31 +5,36 @@ import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import {sankey} from 'd3-sankey';
 
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
 import postProductionQueue from './../../api/postProductionQueue.js';
 
 class ModalSaveQueue extends React.Component {
-  state = {modalShow: false};
+  state = {
+    modalShow: false,
+    saving: false,
+  };
 
   openModal = () => this.setState({modalShow: true});
   closeModal = () => this.setState({modalShow: false});
 
   submitQueueRecord = () => {
+    this.setState({saving: true});
     const queueRecord = this.buildQueueRecord();
-    //const resp = postProductionQueue(queueRecord);
-    console.log(queueRecord);
-    this.closeModal();
+    postProductionQueue(queueRecord)
+      .then(({path}) => this.props.history.push(path))
+      .catch((err) => console.log(err));
   }
 
   buildQueueRecord = () => {
-    const {data, selectedStation, units} = this.props;
+    const {data, selectedStation:station, units} = this.props;
     const {nodes} = sankey().nodeId((d) => d.node_id)(data);
 
     const queueRecord = {
       path: this.decomposeQueuePath(nodes[0], units),
-      selectedStation,
+      station,
     };
 
     return queueRecord;
@@ -46,7 +51,7 @@ class ModalSaveQueue extends React.Component {
 
   render() {
     const {data:{nodes:[node]}, selectedStation} = this.props;
-    const {modalShow} = this.state;
+    const {modalShow, saving} = this.state;
 
     return <div>
       <Button
@@ -76,8 +81,16 @@ class ModalSaveQueue extends React.Component {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          {selectedStation && <Button variant='secondary' onClick={this.submitQueueRecord}>Save</Button>}
-          <Button variant='danger' onClick={this.closeModal}>Cancel</Button>
+          {selectedStation && <Button
+            variant='secondary'
+            onClick={this.submitQueueRecord}
+            disabled={saving}
+          >Save</Button>}
+          <Button
+            variant='danger'
+            onClick={this.closeModal}
+            disabled={saving}
+          >Cancel</Button>
         </Modal.Footer>
       </Modal>
     </div>;
@@ -88,4 +101,4 @@ const mapStateToProps = ({globalState:{selectedStation}, prodChain:{units}}) => 
   return {selectedStation, units};
 };
 
-export default connect(mapStateToProps)(ModalSaveQueue);
+export default connect(mapStateToProps)(withRouter(ModalSaveQueue));

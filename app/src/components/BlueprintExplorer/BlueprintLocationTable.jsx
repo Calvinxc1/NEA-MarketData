@@ -46,9 +46,7 @@ const expandRowTemplate = {
   onlyOneExpanding: true,
   showExpandColumn: true,
   expandHeaderColumnRenderer: () => <span></span>,
-  expandColumnRenderer: ({expanded}) => <span>
-    <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronUp} />
-  </span>,
+  expandColumnRenderer: ({expanded}) => <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronUp} />,
 };
 
 const BlueprintLocationTable = ({blueprints, locations, search, type}) => {

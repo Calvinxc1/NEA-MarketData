@@ -2,12 +2,13 @@ from nea_schema.maria.sde.bp import Product
 from nea_schema.maria.esi.corp import CorpBlueprint
 
 from .parse_process_item import parse_process_item
+from .order_processes import order_processes
 from .....tools.extractors import extract_parent_station
 
-def extract_process_items(conn, product_items, station_ids=[]):
+def extract_processes(conn, product_items, station_ids=[]):
     blueprint_type_ids = [product_item.blueprint_id for product_item in product_items]
     blueprint_items = conn.query(CorpBlueprint).filter(CorpBlueprint.type_id.in_(blueprint_type_ids))
-    process_items = sorted([
+    processes = order_processes([
         parse_process_item(blueprint_item, product_item, extract_parent_station(conn, blueprint_item.location))
         for product_item in product_items
         for blueprint_item in blueprint_items
@@ -26,6 +27,6 @@ def extract_process_items(conn, product_items, station_ids=[]):
                 )
                 or product_item.activity.activity_type not in ['copying', 'invention']
             )
-    ], key=lambda x: x['efficiency_ratio'], reverse=True)
+    ])
     
-    return process_items
+    return processes

@@ -4,7 +4,7 @@ from nea_schema.maria.sde.bp import Product
 from nea_schema.maria.sde.inv import Type
 
 from .extract_market_process import extract_market_process
-from .extract_process_items import extract_process_items
+from .extract_processes import extract_processes
 from .parse_placeholder import parse_placeholder
 from ...helpers import calc_invent_chance, calc_mat_needs, calc_prod_time
 from .....tools.parsers import parse_type
@@ -28,7 +28,7 @@ def extract_node(conn, type_id, output_units, station_ids, ignore_activity):
         return node
     
     process_items = [
-        *extract_process_items(conn, product_items, station_ids),
+        *extract_processes(conn, product_items, station_ids),
         parse_placeholder(product_items),
     ]
     

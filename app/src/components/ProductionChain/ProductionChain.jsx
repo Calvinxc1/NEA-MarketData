@@ -20,7 +20,7 @@ const queryWrapper = (Component) => (props) => {
   return <Component {...props} data={data} status={status}/>;
 };
 
-class ProdChain extends React.Component {
+class ProductionChain extends React.Component {
   componentWillUnmount() {
     this.props.reset();
   }
@@ -40,4 +40,4 @@ const mapStateToProps = ({globalState:{selectedStation}, prodChain:{units}}) => 
   return {selectedStation, units};
 };
 
-export default connect(mapStateToProps, {reset})(queryWrapper(ProdChain));
+export default connect(mapStateToProps, {reset})(queryWrapper(ProductionChain));

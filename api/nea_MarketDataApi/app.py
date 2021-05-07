@@ -45,7 +45,7 @@ api.add_resource(
 )
 api.add_resource(
     ProductionQueue,
-    '/production/queue',
+    '/production/queue', '/production/queue/<queue_id>',
     resource_class_kwargs=kwargs,
 )
 api.add_resource(

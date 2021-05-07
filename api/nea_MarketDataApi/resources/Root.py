@@ -1,6 +1,7 @@
 from flask import make_response, request
 from flask_restful import Resource
 import json
+import ming
 from openapi_core.validation.request.validators import RequestValidator
 from openapi_core.validation.response.validators import ResponseValidator
 from openapi_core.contrib.flask import FlaskOpenAPIRequest, FlaskOpenAPIResponse
@@ -17,6 +18,10 @@ class Root(Resource):
         self._sql_params = sql_params
         self._mongo_params = mongo_params
         self._diag = diag
+    
+    def _init_mongo(self):
+        mongo_uri = 'mongodb://{username}:{password}@{host}/{database}'.format(**self._mongo_params)
+        ming.config.configure_from_nested_dict({'NewEdenAnalytics': {'uri': mongo_uri}})
         
     def _maria_connect(self):
         engine = create_engine('{engine}://{user}:{passwd}@{host}/{db}'.format(**self._sql_params))

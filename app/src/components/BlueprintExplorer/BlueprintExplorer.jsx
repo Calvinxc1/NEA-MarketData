@@ -1,4 +1,5 @@
 import React from 'react';
+import Jumbotron from 'react-bootstrap/Jumbotron';
 
 import BlueprintSearchBar from './BlueprintSearchBar.jsx';
 import StationTable from './StationTable.jsx';
@@ -14,7 +15,7 @@ class BlueprintExplorer extends React.Component {
   hookType = (e) => this.setState({type: e.target.value});
 
   render() {
-    return <div>
+    return <Jumbotron>
       <h1>Blueprint Explorer</h1>
       <BlueprintSearchBar
         hookSearch={this.hookSearch}
@@ -24,7 +25,7 @@ class BlueprintExplorer extends React.Component {
       />
       <hr />
       <StationTable search={this.state.search} type={this.state.type} />
-    </div>;
+    </Jumbotron>;
   }
 }
 

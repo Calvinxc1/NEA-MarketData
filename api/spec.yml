@@ -188,8 +188,30 @@ paths:
         400:
           $ref: '#/components/responses/400InvalidSubmit'
                       
-  
   /production/queue:
+    get:
+      summary: >
+        Retrieves a listing of all production queue items.
+      description: >
+        Retrieves summary information about all current Production Queue items.
+      tags:
+      - Production
+      responses:
+        200:
+          description: >
+            Successfully returned production queue items.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+        400:
+          $ref: '#/components/responses/400InvalidSubmit'
+    
     post:
       summary: >
         Adds a new item to the production queue
@@ -208,6 +230,87 @@ paths:
         200:
           description: >
             Successfully added item to the production queue.
+          content:
+            application/json:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/400InvalidSubmit'
+          
+    delete:
+      summary: >
+        Bulk delete of production queue items
+      description: >
+        Deletes production queue items in bulk
+      tags:
+      - Production
+      parameters:
+      - name: queue_ids
+        in: query
+        description: >
+          Array of `query_id`'s to delete
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        200:
+          description: >
+            Bulk delete successful
+          content:
+            application/json:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/400InvalidSubmit'
+  
+  /production/queue/{queue_id}:
+    get:
+      summary: >
+        Gets an item from the production queue.
+      description: >
+        Gets the details on a specific item from the production queue.
+      tags:
+      - Production
+      parameters:
+      - name: queue_id
+        in: path
+        description: >
+          The id of the queue item to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: >
+            Successfully returned a production queue item.
+          content:
+            application/json:
+              schema:
+                type: object
+        400:
+          $ref: '#/components/responses/400InvalidSubmit'
+    
+    delete:
+      summary: >
+        Deletes an item from the production queue.
+      description: >
+        Deletes a production queue item.
+      tags:
+      - Production
+      parameters:
+      - name: queue_id
+        in: path
+        description: >
+          The id of the queue item to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: >
+            Successfully deleted a production queue item.
           content:
             application/json:
               schema:
