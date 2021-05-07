@@ -7,7 +7,7 @@ import {faChevronDown, faChevronUp} from '@fortawesome/free-solid-svg-icons';
 import {useQuery} from 'react-query';
 import numeral from 'numeral';
 
-import fetchBlueprintLocation from './../../fetchers/fetchBlueprintLocation.js';
+import getBlueprintLocation from './../../api/getBlueprintLocation.js';
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
 import StationTableExpanded from './StationTableExpanded.jsx';
 import Loading from './../Loading/Loading.jsx';
@@ -53,7 +53,7 @@ const expandRowTemplate = {
 
 const queryWrapper = (Component) => (props) => {
   const queryFilter = {search: props.search, type: props.type};
-  const {data, status} = useQuery(['fetchBlueprintLocation', queryFilter], fetchBlueprintLocation);
+  const {data, status} = useQuery(['getBlueprintLocation', queryFilter], getBlueprintLocation);
   return status === 'success' ? <Component {...props} locations={data.data} /> : <Loading />;
 };
 

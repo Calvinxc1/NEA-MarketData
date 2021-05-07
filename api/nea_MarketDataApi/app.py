@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .resources.Blueprint import BlueprintItem, BlueprintLocation
 from .resources.Production import ProductionChain, ProductionQueue
+from .resources.Station import Station
 from config.config import sql_params, mongo_params
 
 app = Flask(__name__)
@@ -44,6 +45,11 @@ api.add_resource(
 )
 api.add_resource(
     ProductionQueue,
-    '/production/queue',
+    '/production/queue', '/production/queue/<queue_id>',
+    resource_class_kwargs=kwargs,
+)
+api.add_resource(
+    Station,
+    '/station',
     resource_class_kwargs=kwargs,
 )
