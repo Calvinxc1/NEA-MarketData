@@ -1,9 +1,10 @@
 import {combineReducers, createStore} from 'redux';
 
 import globalState from './reducers/globalState.js';
-import prodChain from './reducers/prodChain.js';
+import productionChain from './reducers/productionChain.js';
+import productionQueue from './reducers/productionQueue.js';
 
-const reducer = combineReducers({globalState, prodChain});
+const reducer = combineReducers({globalState, productionChain, productionQueue});
 const store = createStore(reducer);
 
 export default store;

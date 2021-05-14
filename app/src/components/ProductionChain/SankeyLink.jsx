@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
 import sankeyLinkArea from './helpers/sankeyLinkArea.js'
-import {setActiveElement, setHover} from './../../store/actions/prodChain.js';
+import {setActiveElement, setHover} from './../../store/actions/productionChain.js';
 
 class SankeyLink extends React.Component {
   state = {
@@ -45,7 +45,7 @@ class SankeyLink extends React.Component {
   }
 }
 
-const mapStateToProps = ({prodChain:{activeElement, hover, linkWeight}}) => {
+const mapStateToProps = ({productionChain:{activeElement, hover, linkWeight}}) => {
   return {hover, activeElement, linkWeight};
 };
 

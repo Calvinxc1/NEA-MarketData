@@ -2,9 +2,7 @@ version: "3"
 
 services:
     app:
-        build:
-            context: ./app/
-            dockerfile: ./../app.Dockerfile
+        build: ./app
         volumes:
         - ./app/:/srv/app/
         - node_modules:/srv/app/node_modules
@@ -13,8 +11,7 @@ services:
         
     api:
         build:
-            context: ./api/
-            dockerfile: ./../api.Dockerfile
+            context: ./api
             args:
                 schema_branch: develop
         networks:

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
 import activityColor from './helpers/activityColor.js';
-import {setActiveElement, setHover} from './../../store/actions/prodChain.js';
+import {setActiveElement, setHover} from './../../store/actions/productionChain.js';
 
 class SankeyNode extends React.Component {
   state = {hover: false}
@@ -83,7 +83,7 @@ class SankeyNode extends React.Component {
   }
 }
 
-const mapStateToProps = ({prodChain:{hover, activeElement}}) => {
+const mapStateToProps = ({productionChain:{hover, activeElement}}) => {
   return {hover, activeElement};
 };
 

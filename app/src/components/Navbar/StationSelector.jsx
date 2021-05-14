@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 import getStations from './../../api/getStations.js';
 import {updateStation} from './../../store/actions/globalState.js';
-import {setActiveElement} from './../../store/actions/prodChain.js';
+import {setActiveElement} from './../../store/actions/productionChain.js';
 
 const queryWrapper = (Component) => (props) => {
   const {data, status} = useQuery(['getStations'], getStations);

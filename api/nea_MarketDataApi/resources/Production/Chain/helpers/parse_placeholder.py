@@ -1,15 +1,13 @@
-from nea_schema.maria.sde.bp import Product
-
 from .calc_efficiency_ratio import calc_efficiency_ratio
-from .....tools.parsers import parse_blueprint_product, parse_type
+from .....tools.parsers import parse_blueprint_product, parse_blueprint_material, parse_type
 
-def parse_placeholder(product_items, invention=False):
-    placeholder = sorted([{
+def parse_placeholder(product_item, invented=False):
+    placeholder = {
         'blueprint': {
             'item_id': product_item.blueprint_id,
             'type': parse_type(product_item.activity.blueprint.type),
-            'material_efficiency': 2 if invention else 0,
-            'time_efficiency': 4 if invention else 0,
+            'material_efficiency': 2 if invented else 0,
+            'time_efficiency': 4 if invented else 0,
             'quantity': 0,
             'runs': -1,
             'max_production_limit': product_item.activity.blueprint.max_production_limit,
@@ -21,7 +19,23 @@ def parse_placeholder(product_items, invention=False):
             'type': product_item.activity.activity_type,
             'time': product_item.activity.time,
         },
-        'material_items': product_item.activity.material,
+        'materials': [
+            parse_blueprint_material(material_item)
+            for material_item in product_item.activity.material
+        ],
         'station_industry': {},
-    } for product_item in product_items], key=lambda x: x['efficiency_ratio'], reverse=True)[0]
+    }
+    
+    if invented:
+        placeholder['materials'].append({
+            'type': parse_type(product_item.activity.blueprint.type),
+            'quantity': 1,
+        })
+        
+    if product_item.activity.activity_type == 'invention':
+        placeholder['materials'].append({
+            'type': parse_type(product_item.activity.blueprint.type),
+            'quantity': 1,
+        })
+    
     return placeholder

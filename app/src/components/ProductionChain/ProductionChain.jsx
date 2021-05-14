@@ -8,7 +8,7 @@ import SankeyRender from './SankeyRender.jsx';
 import ProdChainHeader from './ProdChainHeader.jsx';
 import Loading from './../Loading/Loading.jsx';
 import ChainItemInfo from './ChainItemInfo.jsx';
-import {reset} from './../../store/actions/prodChain.js';
+import {reset} from './../../store/actions/productionChain.js';
 
 const queryWrapper = (Component) => (props) => {
   const params = {
@@ -36,7 +36,7 @@ class ProductionChain extends React.Component {
   }
 }
 
-const mapStateToProps = ({globalState:{selectedStation}, prodChain:{units}}) => {
+const mapStateToProps = ({globalState:{selectedStation}, productionChain:{units}}) => {
   return {selectedStation, units};
 };
 

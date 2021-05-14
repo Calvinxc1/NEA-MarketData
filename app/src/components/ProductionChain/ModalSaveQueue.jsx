@@ -24,7 +24,7 @@ class ModalSaveQueue extends React.Component {
     this.setState({saving: true});
     const queueRecord = this.buildQueueRecord();
     postProductionQueue(queueRecord)
-      .then(({path}) => this.props.history.push(path))
+      .then((resp) => this.props.history.push('/production/queue'))
       .catch((err) => console.log(err));
   }
 
@@ -97,7 +97,7 @@ class ModalSaveQueue extends React.Component {
   }
 }
 
-const mapStateToProps = ({globalState:{selectedStation}, prodChain:{units}}) => {
+const mapStateToProps = ({globalState:{selectedStation}, productionChain:{units}}) => {
   return {selectedStation, units};
 };
 

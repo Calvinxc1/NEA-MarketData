@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_restful import Api
 import logging
+import json
 from openapi_core import create_spec
-from openapi_spec_validator.schemas import read_yaml_file
 from pathlib import Path
 
 from .resources.Blueprint import BlueprintItem, BlueprintLocation
-from .resources.Production import ProductionChain, ProductionQueue
+from .resources.Production import ProductionChain, ProductionQueue, ProductionQueuePriority
 from .resources.Station import Station
 from config.config import sql_params, mongo_params
 
@@ -17,8 +17,8 @@ gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 app.logger.setLevel(gunicorn_logger.level)
 
-spec_path = Path('./spec.yml')
-spec = create_spec(read_yaml_file(spec_path))
+spec_path = Path('./spec.json')
+spec = create_spec(json.load(spec_path.open()))
 
 kwargs = {
     'logger': gunicorn_logger,
@@ -46,6 +46,11 @@ api.add_resource(
 api.add_resource(
     ProductionQueue,
     '/production/queue', '/production/queue/<queue_id>',
+    resource_class_kwargs=kwargs,
+)
+api.add_resource(
+    ProductionQueuePriority,
+    '/production/queue/priority',
     resource_class_kwargs=kwargs,
 )
 api.add_resource(

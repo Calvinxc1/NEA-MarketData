@@ -3,6 +3,7 @@ def parse_queue_item(queue_item, path=True):
         'id': str(queue_item._id),
         'created': queue_item.created,
         'station': queue_item.station,
+        'priority': queue_item.priority,
     }
     
     if path:

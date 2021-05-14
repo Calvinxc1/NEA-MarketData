@@ -9,7 +9,6 @@ import BlueprintExplorer from './components/BlueprintExplorer/BlueprintExplorer.
 import Home from './components/Home/Home.jsx';
 import ProductionChain from './components/ProductionChain/ProductionChain.jsx';
 import ProductionQueue from './components/ProductionQueue/ProductionQueue.jsx';
-import QueueItem from './components/ProductionQueue/QueueItem/QueueItem.jsx';
 import NotFound from './components/NotFound/NotFound.jsx';
 import queryWrapper from './wrappers/queryWrapper.jsx';
 import store from './store/store.js';
@@ -26,7 +25,6 @@ const App = () => {
           <Route exact path='/blueprint/item/:item_id' component={BlueprintItemInfo} />
           <Route exact path='/production/chain/:type_id' component={ProductionChain} />
           <Route exact path='/production/queue/' component={ProductionQueue} />
-          <Route exact path='/production/queue/:queue_id' component={QueueItem} />
           <Route component={NotFound} />
         </Switch>
       </Container>

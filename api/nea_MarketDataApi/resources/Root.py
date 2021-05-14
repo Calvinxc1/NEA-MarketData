@@ -34,14 +34,9 @@ class Root(Resource):
         req = FlaskOpenAPIRequest(request)
         validation = RequestValidator(self._spec).validate(req)
         
-        if InvalidContentType in [type(error) for error in validation.errors]:
-            errors = ['request must have a body']
-        else:
-            errors = [
-                error.message
-                for error_items in validation.errors
-                for error in error_items.schema_errors
-            ]
+        errors = [str(error) for error in validation.errors]
+        
+        if errors: self._logger.warn(errors)
         
         if req.body:
             data = json.loads(req.body)\

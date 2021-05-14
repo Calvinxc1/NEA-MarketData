@@ -1,21 +1,21 @@
 export const setActiveElement = (element={}) => ({
-  type: 'prodChain|setActiveElement',
+  type: 'productionChain|setActiveElement',
   payload: {element},
 });
 
 export const setHover = (type=null, id=null) => ({
-  type: 'prodChain|setHover',
+  type: 'productionChain|setHover',
   payload: {type, id},
 });
 
 export const setLinkWeight = (linkWeight={value:'volume', name:'Volume'}) => ({
-  type: 'prodChain|setLinkWeight',
+  type: 'productionChain|setLinkWeight',
   payload: {linkWeight},
 });
 
 export const setUnits = (units=1) => ({
-  type: 'prodChain|setUnits',
+  type: 'productionChain|setUnits',
   payload: {units},
 });
 
-export const reset = () => ({type: 'prodChain|reset'});
+export const reset = () => ({type: 'productionChain|reset'});

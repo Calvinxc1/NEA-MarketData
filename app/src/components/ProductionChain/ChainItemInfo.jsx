@@ -9,6 +9,6 @@ const ChainItemInfo = ({activeElement}) => <div>
   {activeElement.link_id && <ChainLinkInfo link={activeElement} />}
 </div>;
 
-const mapStateToProps = ({prodChain:{activeElement}}) => ({activeElement});
+const mapStateToProps = ({productionChain:{activeElement}}) => ({activeElement});
 
 export default connect(mapStateToProps)(ChainItemInfo);

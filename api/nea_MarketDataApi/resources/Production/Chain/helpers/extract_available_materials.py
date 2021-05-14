@@ -3,13 +3,11 @@ from .....tools.extractors import extract_parent_station
 
 def extract_available_materials(conn, links, station_ids, neg_displace=0.001):
     material_type_ids = [link['type']['id'] for link in links.values()]
-    asset_items = conn.query(CorpAsset).filter(CorpAsset.type_id.in_(material_type_ids))
+    asset_items = conn.query(CorpAsset)\
+        .filter(CorpAsset.type_id.in_(material_type_ids), CorpAsset.station_id.in_(station_ids))
     
     material_counts = {}
     for asset_item in asset_items:
-        parent_station = extract_parent_station(conn, asset_item)
-        if parent_station['station_id'] not in station_ids: continue
-        
         quant = asset_item.quantity
         if asset_item.blueprint:
             if asset_item.blueprint.quantity == -1:

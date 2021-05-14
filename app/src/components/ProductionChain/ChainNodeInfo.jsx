@@ -26,7 +26,7 @@ const ChainNodeInfo = ({node}) => <Alert variant='info' style={{backgroundColor:
         <b><u>Activity Type</u></b>: {node.process[0].activity.type.split('_').map((word) => word[0].toUpperCase() + word.substr(1)).join(' ')}
       </p>
       <p>
-        <b><u>Runs</u></b>: {numeral(node.output_runs).format('0,0.00')}
+        <b><u>Runs</u></b>: {numeral(node.output_units).format('0,0')}
       </p>
     </Col>
     <Col>
@@ -42,7 +42,7 @@ const ChainNodeInfo = ({node}) => <Alert variant='info' style={{backgroundColor:
         /> {node.type.name}
       </p>
       <p>
-        <b><u>Output Units</u></b>: {numeral(node.output_units).format('0,0.00')}
+        <b><u>Output Units</u></b>: {numeral(node.output_units).format('0,0')}
       </p>
     </Col>
   </Row>

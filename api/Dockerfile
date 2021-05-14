@@ -15,7 +15,7 @@ COPY ./requirements.txt ./
 RUN pip install -r requirements.txt \
     && rm requirements.txt
 
-COPY ./spec.yml ./
+COPY ./spec.json ./
 COPY ./config/ ./config/
 COPY ./nea_MarketDataApi ./nea_MarketDataApi/
 

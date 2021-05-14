@@ -8,29 +8,29 @@ const initialState = {
   units: 1,
 };
 
-const prodChain = (state=initialState, action) => {
+const productionChain = (state=initialState, action) => {
   state = {...state};
   switch(action.type) {
-    case 'prodChain|setActiveElement':
+    case 'productionChain|setActiveElement':
       state.activeElement = action.payload.element;
       return state;
 
-    case 'prodChain|setHover':
+    case 'productionChain|setHover':
       state.hover = {
         type: action.payload.type,
         id: action.payload.id,
       };
       return state;
 
-    case 'prodChain|setLinkWeight':
+    case 'productionChain|setLinkWeight':
       state.linkWeight = action.payload.linkWeight;
       return state;
 
-    case 'prodChain|setUnits':
+    case 'productionChain|setUnits':
       state.units = action.payload.units;
       return state;
 
-    case 'prodChain|reset':
+    case 'productionChain|reset':
       state = initialState;
       return state;
 
@@ -39,4 +39,4 @@ const prodChain = (state=initialState, action) => {
   }
 };
 
-export default prodChain;
+export default productionChain;

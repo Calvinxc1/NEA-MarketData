@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import chroma from 'chroma-js';
 
 import activityColor from './helpers/activityColor.js';
-import {setLinkWeight, setUnits, setActiveElement} from './../../store/actions/prodChain.js';
+import {setLinkWeight, setUnits, setActiveElement} from './../../store/actions/productionChain.js';
 import ModalSaveQueue from './ModalSaveQueue.jsx';
 
 const linkWeightOptions = [{
@@ -62,7 +62,7 @@ const ProdChainHeader = ({status, data, linkWeight, setLinkWeight, units, setUni
   </Row>
 </div>;
 
-const mapStateToProps = ({prodChain:{linkWeight, units}}) => {
+const mapStateToProps = ({productionChain:{linkWeight, units}}) => {
   return {linkWeight, units};
 };
 
