@@ -1,32 +1,32 @@
 import React from 'react';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import {useQuery} from 'react-query';
+import {connect} from 'react-redux';
 
-import BlueprintSearchBar from './BlueprintSearchBar.jsx';
+import BlueprintExplorerFilters from './BlueprintExplorerFilters.jsx';
 import StationTable from './StationTable.jsx';
+import getBlueprintLocation from './../../api/getBlueprintLocation.js';
+import Loading from './../Loading/Loading.jsx';
 
-class BlueprintExplorer extends React.Component {
-  state = {
-    search: '',
-    type: '',
+const queryWrapper = (Component) => (props) => {
+  const queryFilter = {
+    search: props.search,
+    type: props.type,
+    station_ids: props.selectedStation ? [props.selectedStation.station_id] : [],
   };
+  const {data, status} = useQuery(['getBlueprintLocation', queryFilter], getBlueprintLocation);
+  return <Component {...props} data={data} status={status} />;
+};
 
-  hookSearch = (e) => this.setState({search: e.target.value});
+const BlueprintExplorer = ({data, status}) => <Jumbotron>
+  <h1>Blueprint Explorer</h1>
+  <BlueprintExplorerFilters />
+  <hr />
+  {status === 'success' ? <StationTable locations={data.data.locations} /> : <Loading/>}
+</Jumbotron>;
 
-  hookType = (e) => this.setState({type: e.target.value});
+const mapStateToProps = ({globalState:{selectedStation}, blueprintExplorer:{search, type}}) => {
+  return {selectedStation, search, type};
+};
 
-  render() {
-    return <Jumbotron>
-      <h1>Blueprint Explorer</h1>
-      <BlueprintSearchBar
-        hookSearch={this.hookSearch}
-        search={this.state.search}
-        hookType={this.hookType}
-        type={this.state.type}
-      />
-      <hr />
-      <StationTable search={this.state.search} type={this.state.type} />
-    </Jumbotron>;
-  }
-}
-
-export default BlueprintExplorer;
+export default connect(mapStateToProps)(queryWrapper(BlueprintExplorer));

@@ -33,7 +33,9 @@ class QueueNeeds extends React.Component {
       sort: true,
       align: 'center',
       headerAlign: 'center',
-      formatter: (activity_type) => activity_type.split('_').map((word) => word[0].toUpperCase() + word.substr(1)).join(' '),
+      formatter: (activity_type) => activity_type.split('_')
+        .map((word) => word[0].toUpperCase() + word.substr(1))
+        .join(' '),
       headerStyle: {width: '165px'},
       filter: selectFilter({
         options: {
@@ -49,21 +51,30 @@ class QueueNeeds extends React.Component {
       sort: true,
       align: 'right',
       headerAlign: 'center',
-      formatter: (units) => numeral(units).format('0,0'),
+      formatter: ({required, available, needed}) => {
+        const use_need = needed > 0 ? needed
+          : required - available.asset;
+
+        return numeral(use_need).format('0,0');
+      },
       headerStyle: {width: '100px'},
     }],
     defaultSorted: [{dataField: 'type.name', order: 'asc'}],
+    rowStyle: ({units:{needed}}) => ({
+      color: needed > 0 ? '#FFFFFF' : '#2ca25f',
+    }),
   };
 
   render() {
     const {needs} = this.props;
-    const {columns, defaultSorted} = this.state;
+    const {columns, defaultSorted, rowStyle} = this.state;
 
     return <div>
       <BootstrapTable
         columns={columns}
         data={needs}
         defaultSorted={defaultSorted}
+        rowStyle={rowStyle}
         keyField='type.id'
         bootstrap4
         hover

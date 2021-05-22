@@ -8,11 +8,8 @@ const ProcessIcon = ({process}) => <Figure style={{textAlign: 'center'}}>
   <Figure.Image
     width='54' height='54'
     src={process.blueprint ? parseTypeImageUrl(process.blueprint.type, 64,
-      process.blueprint.bp_type === 'original' ? 'bp'
-      : process.blueprint.bp_type === 'copy' ? 'bpc'
-      : process.blueprint.bp_type === 'placeholder' ? 'bpc'
-      : process.blueprint.bp_type === 'relic' ? 'relic'
-      : 'icon'
+      process.blueprint.function === 'placeholder' ? 'bpc'
+      : process.blueprint.function
     ) : 'https://wiki.eveuniversity.org/images/9/9f/Market.png'}
     style={{background: '#000000'}}
     className={process.blueprint && process.blueprint.bp_type === 'placeholder' ? 'border border-warning' : ''}

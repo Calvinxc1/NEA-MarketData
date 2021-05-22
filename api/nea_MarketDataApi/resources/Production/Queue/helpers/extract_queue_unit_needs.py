@@ -11,6 +11,9 @@ def extract_queue_unit_needs(conn, path, station_id, units_required=None, prior_
     )
     units_needed = max(0, units_required - units_avail['total'])
     
+    if path.type.id == 22549:
+        print(units_required, units_avail, units_needed)
+    
     needs = {}
     used = {}
     if units_avail['total'] > 0:
@@ -22,7 +25,19 @@ def extract_queue_unit_needs(conn, path, station_id, units_required=None, prior_
             },
         }
     
-    if units_needed == 0: return needs, used
+    if units_needed == 0:
+        if units_avail['asset'] < units_required:
+            needs[path.type.id] = {
+                'type': path.type,
+                'units': {
+                    'required': units_required,
+                    'available': units_avail,
+                    'needed': units_needed,
+                },
+                'process': reparse_process(path, units_required - units_avail['asset']),
+            }
+        
+        return needs, used
     
     component_usage = {}
     if units_avail['total'] > 0:
@@ -42,7 +57,11 @@ def extract_queue_unit_needs(conn, path, station_id, units_required=None, prior_
     if len(needs) == 0:
         needs[path.type.id] = {
             'type': path.type,
-            'units': units_needed,
+            'units': {
+                'required': units_required,
+                'available': units_avail,
+                'needed': units_needed,
+            },
             'process': reparse_process(path, units_needed),
         }
     

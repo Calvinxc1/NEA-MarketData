@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import {Provider} from 'react-redux';
 
 import NavigationBar from './components/Navbar/NavigationBar.jsx';
-import BlueprintItemInfo from './components/BlueprintItemInfo/BlueprintItemInfo.jsx';
+import BlueprintItem from './components/BlueprintItem/BlueprintItem.jsx';
 import BlueprintExplorer from './components/BlueprintExplorer/BlueprintExplorer.jsx';
 import Home from './components/Home/Home.jsx';
 import ProductionChain from './components/ProductionChain/ProductionChain.jsx';
@@ -22,7 +22,7 @@ const App = () => {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route exact path='/blueprint/explorer' component={BlueprintExplorer} />
-          <Route exact path='/blueprint/item/:item_id' component={BlueprintItemInfo} />
+          <Route exact path='/blueprint/item/:item_id' component={BlueprintItem} />
           <Route exact path='/production/chain/:type_id' component={ProductionChain} />
           <Route exact path='/production/queue/' component={ProductionQueue} />
           <Route component={NotFound} />

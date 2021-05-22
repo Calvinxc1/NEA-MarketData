@@ -1,6 +1,5 @@
 from ...Root import Root
-
-from ....tools.extractors import extract_blueprints_info
+from .helpers import CorpBlueprintExtractor
 
 class BlueprintItem(Root):        
     def get(self, item_id):
@@ -11,7 +10,8 @@ class BlueprintItem(Root):
         item_id = int(req.parameters.path.get('item_id'))
         
         conn = self._maria_connect()
-        blueprint = extract_blueprints_info(conn, [item_id])[0]
+        blueprint = CorpBlueprintExtractor(conn, parent=self, endpoint=True)\
+            .extract_corp_bp(item_id)
         conn.close()
         
         return self._build_response(req, {'data': blueprint})

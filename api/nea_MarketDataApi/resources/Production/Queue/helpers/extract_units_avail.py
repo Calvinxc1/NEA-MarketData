@@ -30,8 +30,8 @@ def extract_units_avail(conn, type_id, station_id, units_used={}):
     
     industry_items_active = conn.query(CorpIndustry).filter(
         CorpIndustry.product_type_id == type_id,
-        CorpIndustry.status == 'active',
-    ).all()
+        CorpIndustry.status.in_(['active', 'paused']),
+    )
     industry_units_active = sum([
         industry_item.runs * industry_item.licensed_runs * industry_item.probability\
             if industry_item.activity_type == 'copying'\

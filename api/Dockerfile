@@ -19,6 +19,4 @@ COPY ./spec.json ./
 COPY ./config/ ./config/
 COPY ./nea_MarketDataApi ./nea_MarketDataApi/
 
-VOLUME /srv/app/config.py
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "nea_MarketDataApi:app"]
+CMD ["gunicorn", "-c", "./config/gunicorn.conf.py", "nea_MarketDataApi:app"]

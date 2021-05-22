@@ -11,11 +11,7 @@ import {setActiveElement} from './../../store/actions/productionChain.js';
 
 const queryWrapper = (Component) => (props) => {
   const {data, status} = useQuery(['getStations'], getStations);
-  return <Component
-    {...props}
-    data={status === 'success' ? data.data : null}
-    status={status}
-  />;
+  return <Component {...props} data={data} status={status} />;
 };
 
 const StationSelector = ({data, status, selectedStation, updateStation, setActiveElement}) => <InputGroup style={{display: 'flex', justifyContent: 'flex-end'}}>
@@ -33,7 +29,7 @@ const StationSelector = ({data, status, selectedStation, updateStation, setActiv
             setActiveElement();
           }}
         >None</Dropdown.Item>
-        {data.map((station) => <Dropdown.Item
+        {data.data.map((station) => <Dropdown.Item
           key={station.station_id}
           onClick={() => {
             updateStation(station);

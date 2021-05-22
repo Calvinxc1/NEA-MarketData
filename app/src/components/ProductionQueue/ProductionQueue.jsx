@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 
 import getProductionQueue from './../../api/getProductionQueue.js';
 import QueueList from './QueueList.jsx';
+import QueueStatus from './QueueStatus.jsx';
 import Loading from './../Loading/Loading.jsx';
 import DeleteModal from './DeleteModal.jsx';
 import QuickbarModal from './QuickbarModal.jsx';
@@ -36,6 +37,11 @@ class ProductionQueue extends React.Component {
       {status === 'success' ? <div>
         <QueueList queues={data.data.queues} refetch={refetch} />
         <DeleteModal deleteQueueRecord={this.deleteQueueRecord} />
+        <QueueStatus
+          queueName='Full List'
+          needs={data.data.needs}
+          used={data.data.used}
+        />
         <QuickbarModal />
       </div> : <Loading />}
     </div>;

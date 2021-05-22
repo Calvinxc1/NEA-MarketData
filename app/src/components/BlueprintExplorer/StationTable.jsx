@@ -4,13 +4,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faChevronDown, faChevronUp} from '@fortawesome/free-solid-svg-icons';
-import {useQuery} from 'react-query';
 import numeral from 'numeral';
 
-import getBlueprintLocation from './../../api/getBlueprintLocation.js';
 import parseTypeImageUrl from './../../tools/parseTypeImageUrl.js';
-import StationTableExpanded from './StationTableExpanded.jsx';
-import Loading from './../Loading/Loading.jsx';
+import StationTableExpand from './StationTableExpand.jsx';
 
 const columns = [{
   dataField: 'type',
@@ -30,53 +27,41 @@ const columns = [{
   dataField: 'type.name',
   text: 'Type',
   sort: true,
+  headerStyle: () => ({width: '256px'}),
 },{
-  dataField: 'bp_counts.station',
+  dataField: 'blueprint_count',
   text: "BP's",
   sort: true,
   align: 'right',
   headerAlign: 'center',
   headerStyle: () => ({width: '128px'}),
-  formatter: (bp_count) => numeral(bp_count).format('0,0'),
+  formatter: (blueprint_count) => numeral(blueprint_count).format('0,0'),
 }];
 
 const defaultSorted = [{dataField: 'name', order: 'asc'}];
 
-const expandRowTemplate = {
+const expandRow = {
   onlyOneExpanding: true,
   showExpandColumn: true,
   expandHeaderColumnRenderer: () => <span></span>,
   expandColumnRenderer: ({expanded}) => <span>
     <FontAwesomeIcon icon={expanded ? faChevronDown : faChevronUp} />
   </span>,
+  renderer: ({station_id, office}) => <StationTableExpand
+    station_id={station_id}
+    office={office}
+  />,
 };
 
-const queryWrapper = (Component) => (props) => {
-  const queryFilter = {search: props.search, type: props.type};
-  const {data, status} = useQuery(['getBlueprintLocation', queryFilter], getBlueprintLocation);
-  return status === 'success' ? <Component {...props} locations={data.data} /> : <Loading />;
-};
+const StationTable = ({locations}) => <BootstrapTable
+  columns={columns}
+  data={locations}
+  defaultSorted={defaultSorted}
+  expandRow={expandRow}
+  keyField='station_id'
+  bootstrap4
+  hover
+  pagination={paginationFactory()}
+/>;
 
-const StationTable = ({locations, search, type}) => {
-  const expandRow = {
-    ...expandRowTemplate,
-    renderer: (station) => <StationTableExpanded
-      station={station}
-      search={search}
-      type={type}
-    />,
-  };
-
-  return <BootstrapTable
-    columns={columns}
-    data={locations}
-    defaultSorted={defaultSorted}
-    expandRow={expandRow}
-    keyField='station_id'
-    bootstrap4
-    hover
-    pagination={paginationFactory()}
-  />;
-};
-
-export default queryWrapper(StationTable);
+export default StationTable;

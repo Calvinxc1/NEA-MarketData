@@ -15,6 +15,7 @@ const columns = [{
     src={parseTypeImageUrl(type, 32,
       type.group.category.id === 9 ? 'bpc'
       : type.group.category.id === 34 ? 'relic'
+      : type.group.category.id === 24 ? 'reaction'
       : 'icon'
     )}
     style={{background: '#000000'}}
@@ -41,7 +42,7 @@ const columns = [{
     if(available_quantity) {
       if(available_quantity <= 0) {
         return <span>
-          {numeral(-available_quantity).format('0,0')} (BPo)
+          (BPo) {numeral(-available_quantity).format('0,0')}
         </span>;
       } else {
         return numeral(available_quantity).format('0,0');

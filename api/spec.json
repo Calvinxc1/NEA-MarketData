@@ -56,13 +56,7 @@
         "description" : "Returns detailed information on a specific blueprint item, by `item_id`.\n",
         "tags" : [ "Blueprints" ],
         "parameters" : [ {
-          "name" : "item_id",
-          "in" : "path",
-          "description" : "The `item_id` of the blueprint to be returned.\n",
-          "required" : true,
-          "schema" : {
-            "type" : "integer"
-          }
+          "$ref" : "#/components/parameters/BlueprintItem-ItemId"
         } ],
         "responses" : {
           "200" : {
@@ -75,6 +69,11 @@
                     "data" : {
                       "$ref" : "#/components/schemas/BlueprintItem"
                     }
+                  }
+                },
+                "examples" : {
+                  "Default" : {
+                    "$ref" : "#/components/examples/BlueprintItem-Response200"
                   }
                 }
               }
@@ -89,25 +88,14 @@
     "/blueprint/location" : {
       "get" : {
         "summary" : "Returns a listing of stations that have corp blueprints.\n",
-        "description" : "Returns all top-level (stations) locations that contain corporation-held blueprints, including a count of blueprints at that location, and the office `location_id` for further parsing using the `/location/blueprint/{location_id}` endpoint.\n",
+        "description" : "Returns all top-level (stations) locations that contain corporation-held blueprints, including a count of blueprints at that location, and office information, with the office `location_id`, for further parsing using the `/location/blueprint/{location_id}` endpoint.\n",
         "tags" : [ "Blueprints" ],
         "parameters" : [ {
-          "name" : "search",
-          "in" : "query",
-          "description" : "Text search/filtering of blueprint names that count toward a location.\n",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
+          "$ref" : "#/components/parameters/BlueprintLocation-Search"
         }, {
-          "name" : "type",
-          "in" : "query",
-          "description" : "Blueprint type filtering for counting a blueprint toward a location.\n",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "original", "copy", "relic" ]
-          }
+          "$ref" : "#/components/parameters/BlueprintLocation-Type"
+        }, {
+          "$ref" : "#/components/parameters/BlueprintLocation-StationIds"
         } ],
         "responses" : {
           "200" : {
@@ -118,8 +106,13 @@
                   "type" : "object",
                   "properties" : {
                     "data" : {
-                      "$ref" : "#/components/schemas/StationBlueprint"
+                      "$ref" : "#/components/schemas/BlueprintLocation"
                     }
+                  }
+                },
+                "examples" : {
+                  "Default" : {
+                    "$ref" : "#/components/examples/BlueprintLocation-Response200"
                   }
                 }
               }
@@ -137,30 +130,13 @@
         "description" : "Returns a listing of all blueprints at the specified `location_id`, as well as a listing of all child locations that have blueprints, including their respective blueprint counts.\n",
         "tags" : [ "Blueprints" ],
         "parameters" : [ {
-          "name" : "location_id",
-          "in" : "path",
-          "description" : "The `location_id` of the location being queried.\n",
-          "required" : true,
-          "schema" : {
-            "type" : "integer"
-          }
+          "$ref" : "#/components/parameters/BlueprintLocation-LocationId"
         }, {
-          "name" : "search",
-          "in" : "query",
-          "description" : "Text search/filtering of blueprint names that count toward a location.\n",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
+          "$ref" : "#/components/parameters/BlueprintLocation-Search"
         }, {
-          "name" : "type",
-          "in" : "query",
-          "description" : "Blueprint type filtering for counting a blueprint toward a location.\n",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "original", "copy", "relic" ]
-          }
+          "$ref" : "#/components/parameters/BlueprintLocation-Type"
+        }, {
+          "$ref" : "#/components/parameters/BlueprintLocation-StationIds"
         } ],
         "responses" : {
           "200" : {
@@ -171,8 +147,13 @@
                   "type" : "object",
                   "properties" : {
                     "data" : {
-                      "$ref" : "#/components/schemas/LocationBlueprint"
+                      "$ref" : "#/components/schemas/BlueprintLocationItem"
                     }
+                  }
+                },
+                "examples" : {
+                  "Default" : {
+                    "$ref" : "#/components/examples/BlueprintLocationItem-Response200"
                   }
                 }
               }
@@ -415,43 +396,14 @@
                     "data" : {
                       "type" : "array",
                       "items" : {
-                        "type" : "object",
-                        "properties" : {
-                          "station_id" : {
-                            "type" : "integer"
-                          },
-                          "name" : {
-                            "type" : "string"
-                          },
-                          "type" : {
-                            "$ref" : "#/components/schemas/TypeDetails"
-                          },
-                          "system_id" : {
-                            "type" : "integer"
-                          },
-                          "owner_id" : {
-                            "type" : "integer"
-                          },
-                          "office_id" : {
-                            "type" : "integer"
-                          },
-                          "industry" : {
-                            "type" : "object",
-                            "properties" : {
-                              "strEngCostBonus" : {
-                                "type" : "number"
-                              },
-                              "strEngMatBonus" : {
-                                "type" : "number"
-                              },
-                              "strEngTimeBonus" : {
-                                "type" : "number"
-                              }
-                            }
-                          }
-                        }
+                        "$ref" : "#/components/schemas/Default-Station"
                       }
                     }
+                  }
+                },
+                "examples" : {
+                  "Default" : {
+                    "$ref" : "#/components/examples/Station-Response200"
                   }
                 }
               }
@@ -466,6 +418,60 @@
   },
   "components" : {
     "parameters" : {
+      "BlueprintItem-ItemId" : {
+        "name" : "item_id",
+        "in" : "path",
+        "description" : "The `item_id` of the blueprint to be returned.\n",
+        "required" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "BlueprintLocation-LocationId" : {
+        "name" : "location_id",
+        "in" : "path",
+        "description" : "The `location_id` of the location being queried.\n",
+        "required" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "BlueprintLocation-Search" : {
+        "name" : "search",
+        "in" : "query",
+        "description" : "Text search/filtering of blueprint names that count toward a location.\n",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "BlueprintLocation-Type" : {
+        "name" : "type",
+        "in" : "query",
+        "description" : "Blueprint type filtering for counting a blueprint toward a location.\n",
+        "required" : false,
+        "schema" : {
+          "type" : "string",
+          "enum" : [ "bp", "bpc", "relic" ]
+        }
+      },
+      "BlueprintLocation-StationIds" : {
+        "name" : "station_ids",
+        "in" : "query",
+        "description" : "A JSONified array of `station_id`'s to filter the results by.\n",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "BlueprintStation-StationId" : {
+        "name" : "station_ids",
+        "in" : "query",
+        "description" : "JSONified array of `station_id`'s to filter the results by.\n",
+        "schema" : {
+          "type" : "string"
+        }
+      },
       "ProductionChain-TypeID" : {
         "name" : "type_id",
         "in" : "path",
@@ -588,86 +594,15 @@
           }
         }
       },
-      "LocationDetails" : {
-        "type" : "object",
-        "properties" : {
-          "flag" : {
-            "type" : "string",
-            "enum" : [ "CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7" ]
-          },
-          "location_id" : {
-            "type" : "integer"
-          },
-          "name" : {
-            "type" : "string",
-            "nullable" : true
-          },
-          "parent" : {
-            "type" : "object",
-            "properties" : {
-              "flag" : {
-                "type" : "string"
-              },
-              "location_id" : {
-                "type" : "integer"
-              },
-              "type" : {
-                "type" : "string"
-              }
-            }
-          },
-          "type" : {
-            "$ref" : "#/components/schemas/TypeDetails"
-          }
-        }
-      },
-      "BlueprintDetails" : {
-        "type" : "object",
-        "properties" : {
-          "activities" : {
-            "type" : "array",
-            "items" : {
-              "allOf" : [ {
-                "$ref" : "#/components/schemas/BlueprintActivityDetails"
-              } ]
-            }
-          },
-          "bp_type" : {
-            "type" : "string",
-            "enum" : [ "original", "copy", "relic" ]
-          },
-          "item_id" : {
-            "type" : "integer"
-          },
-          "location" : {
-            "$ref" : "#/components/schemas/LocationDetails"
-          },
-          "material_efficiency" : {
-            "type" : "integer"
-          },
-          "max_production_limit" : {
-            "type" : "integer"
-          },
-          "quantity" : {
-            "type" : "integer"
-          },
-          "runs" : {
-            "type" : "integer"
-          },
-          "time_efficiency" : {
-            "type" : "integer"
-          },
-          "type" : {
-            "$ref" : "#/components/schemas/TypeDetails"
-          }
-        }
-      },
-      "BlueprintActivityDetails" : {
+      "Default-BlueprintActivity" : {
         "type" : "object",
         "properties" : {
           "activity_type" : {
             "type" : "string",
             "enum" : [ "manufacturing", "invention", "copying", "research_material", "research_time", "reaction" ]
+          },
+          "time" : {
+            "type" : "integer"
           },
           "materials" : {
             "type" : "array",
@@ -678,7 +613,7 @@
                   "type" : "integer"
                 },
                 "type" : {
-                  "$ref" : "#/components/schemas/TypeDetails"
+                  "$ref" : "#/components/schemas/Default-Type"
                 }
               }
             }
@@ -695,7 +630,7 @@
                   "type" : "integer"
                 },
                 "type" : {
-                  "$ref" : "#/components/schemas/TypeDetails"
+                  "$ref" : "#/components/schemas/Default-Type"
                 }
               }
             }
@@ -709,700 +644,268 @@
                   "type" : "integer"
                 },
                 "type" : {
-                  "$ref" : "#/components/schemas/TypeDetails"
+                  "$ref" : "#/components/schemas/Default-Type"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Default-Location" : {
+        "type" : "object",
+        "properties" : {
+          "location_id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "type" : "object",
+            "properties" : {
+              "flag" : {
+                "type" : "string"
+              },
+              "location_id" : {
+                "type" : "integer"
+              },
+              "type" : {
+                "type" : "string"
+              }
+            }
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/Default-Type"
+          }
+        }
+      },
+      "Default-Station" : {
+        "type" : "object",
+        "properties" : {
+          "industry" : {
+            "type" : "object",
+            "properties" : {
+              "strEngCostBonus" : {
+                "type" : "number"
+              },
+              "strEngMatBonus" : {
+                "type" : "number"
+              },
+              "strEngTimeBonus" : {
+                "type" : "number"
+              }
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "office" : {
+            "$ref" : "#/components/schemas/Default-Location"
+          },
+          "owner_id" : {
+            "type" : "integer"
+          },
+          "station_id" : {
+            "type" : "integer"
+          },
+          "system_id" : {
+            "type" : "integer"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/Default-Type"
+          }
+        }
+      },
+      "Default-Type" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "mass" : {
+            "type" : "number"
+          },
+          "portion_size" : {
+            "type" : "integer"
+          },
+          "volume" : {
+            "type" : "number"
+          },
+          "group" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "integer"
+              },
+              "name" : {
+                "type" : "string"
+              },
+              "category" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer"
+                  },
+                  "name" : {
+                    "type" : "string"
+                  }
                 }
               }
             }
           },
-          "time" : {
-            "type" : "integer"
+          "market_group" : {
+            "type" : "object",
+            "properties" : {
+              "id" : {
+                "type" : "integer"
+              },
+              "name" : {
+                "type" : "string"
+              },
+              "parent" : {
+                "description" : "recursive market group item",
+                "type" : "object"
+              }
+            }
           }
         }
       },
       "BlueprintItem" : {
         "type" : "object",
         "properties" : {
-          "item_id" : {
-            "type" : "integer",
-            "example" : 1032906040948
+          "function" : {
+            "type" : "string",
+            "enum" : [ "bp", "bpc", "relic", "reaction" ]
           },
-          "type" : {
-            "allOf" : [ {
-              "$ref" : "#/components/schemas/TypeDetails"
-            }, {
-              "example" : {
-                "id" : 28607,
-                "name" : "Orca Blueprint",
-                "group" : {
-                  "id" : 945,
-                  "name" : "Industrial Command Ship Blueprint",
-                  "category" : {
-                    "id" : 9,
-                    "name" : "Blueprint"
-                  }
-                },
-                "market_group" : {
-                  "id" : 2334,
-                  "name" : "ORE",
-                  "parent" : {
-                    "id" : 2333,
-                    "name" : "Industrial Command Ships",
-                    "parent" : {
-                      "id" : 204,
-                      "name" : "Ships",
-                      "parent" : {
-                        "id" : 2,
-                        "name" : "Blueprints & Reactions"
-                      }
-                    }
-                  }
-                },
-                "mass" : null,
-                "volume" : 0.01,
-                "portion_size" : 1
-              }
-            } ]
+          "item_id" : {
+            "type" : "integer"
           },
           "location" : {
-            "allOf" : [ {
-              "$ref" : "#/components/schemas/LocationDetails"
-            }, {
-              "example" : {
-                "location_id" : 1025461508274,
-                "name" : "Ships",
-                "type" : {
-                  "id" : 17363,
-                  "name" : "Small Audit Log Secure Container",
-                  "group" : {
-                    "id" : 448,
-                    "name" : "Audit Log Secure Container",
-                    "category" : {
-                      "id" : 2,
-                      "name" : "Celestial"
-                    }
-                  },
-                  "market_group" : {
-                    "id" : 1652,
-                    "name" : "Audit Log Containers",
-                    "parent" : {
-                      "id" : 379,
-                      "name" : "Cargo Containers",
-                      "parent" : {
-                        "id" : 404,
-                        "name" : "Deployable Structures",
-                        "parent" : {
-                          "id" : 477,
-                          "name" : "Structures"
-                        }
-                      }
-                    }
-                  },
-                  "mass" : 10000,
-                  "volume" : 100,
-                  "portion_size" : 1
-                },
-                "parent" : {
-                  "location_id" : 1034503382954,
-                  "flag" : "CorpSAG7",
-                  "type" : "item"
-                },
-                "flag" : "CorpSAG7"
+            "type" : "object",
+            "properties" : {
+              "flag" : {
+                "type" : "string"
+              },
+              "location_id" : {
+                "type" : "integer"
               }
-            } ]
+            }
           },
           "material_efficiency" : {
-            "type" : "integer",
-            "example" : 9
-          },
-          "time_efficiency" : {
-            "type" : "integer",
-            "example" : 16
-          },
-          "quantity" : {
-            "type" : "integer",
-            "example" : 0
-          },
-          "runs" : {
-            "type" : "integer",
-            "example" : 1
+            "type" : "integer"
           },
           "max_production_limit" : {
-            "type" : "integer",
-            "example" : 1
+            "type" : "integer"
+          },
+          "quantity" : {
+            "type" : "integer"
+          },
+          "runs" : {
+            "type" : "integer"
+          },
+          "time_efficiency" : {
+            "type" : "integer"
           },
           "activities" : {
             "type" : "array",
             "items" : {
-              "allOf" : [ {
-                "$ref" : "#/components/schemas/BlueprintActivityDetails"
-              }, {
-                "example" : {
-                  "activity_type" : "manufacturing",
-                  "time" : 1500000,
-                  "materials" : [ {
-                    "type" : {
-                      "id" : 21013,
-                      "name" : "Capital Sensor Cluster",
-                      "group" : {
-                        "id" : 873,
-                        "name" : "Capital Construction Components",
-                        "category" : {
-                          "id" : 17,
-                          "name" : "Commodity"
-                        }
-                      },
-                      "market_group" : {
-                        "id" : 781,
-                        "name" : "Standard Capital Ship Components",
-                        "parent" : {
-                          "id" : 1035,
-                          "name" : "Components",
-                          "parent" : {
-                            "id" : 475,
-                            "name" : "Manufacture & Research"
-                          }
-                        }
-                      },
-                      "mass" : 10000,
-                      "volume" : 10000,
-                      "portion_size" : 1
-                    },
-                    "quantity" : 4
-                  } ],
-                  "products" : [ {
-                    "type" : {
-                      "id" : 28606,
-                      "name" : "Orca",
-                      "group" : {
-                        "id" : 941,
-                        "name" : "Industrial Command Ship",
-                        "category" : {
-                          "id" : 6,
-                          "name" : "Ship"
-                        }
-                      },
-                      "market_group" : {
-                        "id" : 2336,
-                        "name" : "ORE",
-                        "parent" : {
-                          "id" : 2335,
-                          "name" : "Industrial Command Ships",
-                          "parent" : {
-                            "id" : 1382,
-                            "name" : "Industrial Ships",
-                            "parent" : {
-                              "id" : 4,
-                              "name" : "Ships"
-                            }
-                          }
-                        }
-                      },
-                      "mass" : 150000000,
-                      "volume" : 10250000,
-                      "portion_size" : 1
-                    },
-                    "quantity" : 1,
-                    "probability" : 1
-                  } ],
-                  "skills" : [ {
-                    "type" : {
-                      "id" : 22242,
-                      "name" : "Capital Ship Construction",
-                      "group" : {
-                        "id" : 268,
-                        "name" : "Production",
-                        "category" : {
-                          "id" : 16,
-                          "name" : "Skill"
-                        }
-                      },
-                      "market_group" : {
-                        "id" : 369,
-                        "name" : "Production",
-                        "parent" : {
-                          "id" : 150,
-                          "name" : "Skills"
-                        }
-                      },
-                      "mass" : null,
-                      "volume" : 0.01,
-                      "portion_size" : 1
-                    },
-                    "level" : 1
-                  } ]
-                }
-              } ]
-            }
-          },
-          "bp_type" : {
-            "type" : "string",
-            "enum" : [ "original", "copy", "relic" ],
-            "example" : "copy"
-          },
-          "parent_station" : {
-            "type" : "object",
-            "properties" : {
-              "station_id" : {
-                "type" : "integer",
-                "example" : 1032903563769
-              },
-              "name" : {
-                "type" : "string",
-                "example" : "Alentene - IChooseYou Market and Industry"
-              },
-              "type" : {
-                "allOf" : [ {
-                  "$ref" : "#/components/schemas/TypeDetails"
-                }, {
-                  "example" : {
-                    "id" : 35827,
-                    "name" : "Sotiyo",
-                    "group" : {
-                      "id" : 1404,
-                      "name" : "Engineering Complex",
-                      "category" : {
-                        "id" : 65,
-                        "name" : "Structure"
-                      }
-                    },
-                    "market_group" : {
-                      "id" : 2324,
-                      "name" : "Engineering Complexes",
-                      "parent" : {
-                        "id" : 477,
-                        "name" : "Structures"
-                      }
-                    },
-                    "mass" : 50000000000,
-                    "volume" : 800000,
-                    "portion_size" : 1
-                  }
-                } ]
-              },
-              "system_id" : {
-                "type" : "integer",
-                "example" : 30005304
-              },
-              "location_type" : {
-                "type" : "string",
-                "example" : "system"
-              },
-              "owner_id" : {
-                "type" : "integer",
-                "example" : 98425418
-              }
+              "$ref" : "#/components/schemas/Default-BlueprintActivity"
             }
           }
         }
       },
-      "StationBlueprint" : {
-        "type" : "array",
-        "items" : {
-          "type" : "object",
-          "properties" : {
-            "bp_counts" : {
+      "BlueprintLocation" : {
+        "type" : "object",
+        "properties" : {
+          "blueprints" : {
+            "type" : "array",
+            "items" : { },
+            "maxItems" : 0
+          },
+          "locations" : {
+            "type" : "array",
+            "items" : {
               "type" : "object",
               "properties" : {
-                "divisions" : {
-                  "type" : "array",
-                  "items" : {
-                    "type" : "object",
-                    "properties" : {
-                      "count" : {
-                        "type" : "integer",
-                        "example" : 216
-                      },
-                      "division" : {
-                        "type" : "string",
-                        "enum" : [ "CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7" ],
-                        "example" : "CorpSAG7"
-                      }
+                "blueprint_count" : {
+                  "type" : "integer"
+                },
+                "industry" : {
+                  "type" : "object",
+                  "properties" : {
+                    "strEngCostBonus" : {
+                      "type" : "number"
+                    },
+                    "strEngMatBonus" : {
+                      "type" : "number"
+                    },
+                    "strEngTimeBonus" : {
+                      "type" : "number"
                     }
                   }
-                },
-                "station" : {
-                  "type" : "integer",
-                  "example" : 216
-                }
-              }
-            },
-            "location_type" : {
-              "type" : "string",
-              "enum" : [ "system" ],
-              "example" : "system"
-            },
-            "name" : {
-              "type" : "string",
-              "example" : "Alentene - IChooseYou Market and Industry"
-            },
-            "office" : {
-              "type" : "object",
-              "properties" : {
-                "location_id" : {
-                  "type" : "integer",
-                  "example" : 1034503382954
                 },
                 "name" : {
-                  "type" : "string",
-                  "nullable" : true,
-                  "example" : null
+                  "type" : "string"
+                },
+                "office" : {
+                  "$ref" : "#/components/schemas/Default-Location"
+                },
+                "owner_id" : {
+                  "type" : "integer"
+                },
+                "station_id" : {
+                  "type" : "integer"
+                },
+                "system_id" : {
+                  "type" : "integer"
                 },
                 "type" : {
-                  "allOf" : [ {
-                    "$ref" : "#/components/schemas/TypeDetails"
-                  }, {
-                    "example" : {
-                      "group" : {
-                        "category" : {
-                          "id" : 3,
-                          "name" : "Station"
-                        },
-                        "id" : 16,
-                        "name" : "Station Services"
-                      },
-                      "id" : 27,
-                      "market_group" : null,
-                      "mass" : null,
-                      "name" : "Office",
-                      "portion_size" : 1,
-                      "volume" : 1
-                    }
-                  } ]
+                  "$ref" : "#/components/schemas/Default-Type"
                 }
               }
-            },
-            "owner_id" : {
-              "type" : "integer",
-              "example" : 98425418
-            },
-            "station_id" : {
-              "type" : "integer",
-              "example" : 1032903563769
-            },
-            "system_id" : {
-              "type" : "integer",
-              "example" : 30005304
-            },
-            "type" : {
-              "allOf" : [ {
-                "$ref" : "#/components/schemas/TypeDetails"
-              }, {
-                "example" : {
-                  "group" : {
-                    "category" : {
-                      "id" : 65,
-                      "name" : "Structure"
-                    },
-                    "id" : 1404,
-                    "name" : "Engineering Complex"
-                  },
-                  "id" : 35827,
-                  "market_group" : {
-                    "id" : 2324,
-                    "name" : "Engineering Complex",
-                    "parent" : {
-                      "id" : 477,
-                      "name" : "Structures"
-                    }
-                  },
-                  "mass" : 5.0E10,
-                  "name" : "Sotiyo",
-                  "portion_size" : 1,
-                  "volume" : 800000.0
-                }
-              } ]
             }
           }
         }
       },
-      "LocationBlueprint" : {
+      "BlueprintLocationItem" : {
         "type" : "object",
         "properties" : {
           "blueprints" : {
             "type" : "array",
             "items" : {
-              "allOf" : [ {
-                "$ref" : "#/components/schemas/BlueprintDetails"
-              }, {
-                "example" : {
-                  "activities" : [ {
-                    "activity_type" : "invention",
-                    "materials" : [ {
-                      "quantity" : 3,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 17,
-                            "name" : "Commodity"
-                          },
-                          "id" : 333,
-                          "name" : "Datacores"
-                        },
-                        "id" : 20412,
-                        "market_group" : {
-                          "id" : 1880,
-                          "name" : "Datacores",
-                          "parent" : {
-                            "id" : 1872,
-                            "name" : "Research Equipment",
-                            "parent" : {
-                              "id" : 475,
-                              "name" : "Manufacture & Research"
-                            }
-                          }
-                        },
-                        "mass" : 1,
-                        "name" : "Datacore - Plasma Physics",
-                        "portion_size" : 1,
-                        "volume" : 0.1
-                      }
-                    }, {
-                      "quantity" : 3,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 17,
-                            "name" : "Commodity"
-                          },
-                          "id" : 333,
-                          "name" : "Datacores"
-                        },
-                        "id" : 20424,
-                        "market_group" : {
-                          "id" : 1880,
-                          "name" : "Datacores",
-                          "parent" : {
-                            "id" : 1872,
-                            "name" : "Research Equipment",
-                            "parent" : {
-                              "id" : 475,
-                              "name" : "Manufacture & Research"
-                            }
-                          }
-                        },
-                        "mass" : 1,
-                        "name" : "Datacore - Mechanical Engineering",
-                        "portion_size" : 1,
-                        "volume" : 0.1
-                      }
-                    } ],
-                    "products" : [ {
-                      "probability" : 0.21,
-                      "quantity" : 10,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 9,
-                            "name" : "Blueprint"
-                          },
-                          "id" : 1309,
-                          "name" : "Tactical Destroyer Blueprint"
-                        },
-                        "id" : 34318,
-                        "market_group" : null,
-                        "mass" : null,
-                        "name" : "Confessor Blueprint",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    }, {
-                      "probability" : 0.21,
-                      "quantity" : 10,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 9,
-                            "name" : "Blueprint"
-                          },
-                          "id" : 1309,
-                          "name" : "Tactical Destroyer Blueprint"
-                        },
-                        "id" : 34563,
-                        "market_group" : null,
-                        "mass" : null,
-                        "name" : "Svipul Blueprint",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    }, {
-                      "probability" : 0.21,
-                      "quantity" : 10,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 9,
-                            "name" : "Blueprint"
-                          },
-                          "id" : 1309,
-                          "name" : "Tactical Destroyer Blueprint"
-                        },
-                        "id" : 34829,
-                        "market_group" : null,
-                        "mass" : null,
-                        "name" : "Jackdaw Blueprint",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    }, {
-                      "probability" : 0.21,
-                      "quantity" : 10,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 9,
-                            "name" : "Blueprint"
-                          },
-                          "id" : 1309,
-                          "name" : "Tactical Destroyer Blueprint"
-                        },
-                        "id" : 35684,
-                        "market_group" : null,
-                        "mass" : null,
-                        "name" : "Hecate Blueprint",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    } ],
-                    "skills" : [ {
-                      "level" : 1,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 16,
-                            "name" : "Skill"
-                          },
-                          "id" : 270,
-                          "name" : "Science"
-                        },
-                        "id" : 3408,
-                        "market_group" : {
-                          "id" : 375,
-                          "name" : "Science",
-                          "parent" : {
-                            "id" : 150,
-                            "name" : "Skills"
-                          }
-                        },
-                        "mass" : null,
-                        "name" : "Sleeper Encryption Methods",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    }, {
-                      "level" : 1,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 16,
-                            "name" : "Skill"
-                          },
-                          "id" : 270,
-                          "name" : "Science"
-                        },
-                        "id" : 11441,
-                        "market_group" : {
-                          "id" : 375,
-                          "name" : "Science",
-                          "parent" : {
-                            "id" : 150,
-                            "name" : "Skills"
-                          }
-                        },
-                        "mass" : null,
-                        "name" : "Plasma Physics",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    }, {
-                      "level" : 1,
-                      "type" : {
-                        "group" : {
-                          "category" : {
-                            "id" : 16,
-                            "name" : "Skill"
-                          },
-                          "id" : 270,
-                          "name" : "Science"
-                        },
-                        "id" : 11452,
-                        "market_group" : {
-                          "id" : 375,
-                          "name" : "Science",
-                          "parent" : {
-                            "id" : 150,
-                            "name" : "Skills"
-                          }
-                        },
-                        "mass" : null,
-                        "name" : "Mechanical Engineering",
-                        "portion_size" : 1,
-                        "volume" : 0.01
-                      }
-                    } ],
-                    "time" : 3600
-                  } ],
-                  "bp_type" : "relic",
-                  "item_id" : 1031575738636,
-                  "location" : {
-                    "flag" : "CorpSAG7",
-                    "location_id" : 1034503382954,
-                    "name" : null,
-                    "parent" : {
-                      "flag" : "OfficeFolder",
-                      "location_id" : 1032903563769,
-                      "type" : "item"
-                    },
-                    "type" : {
-                      "group" : {
-                        "category" : {
-                          "id" : 3,
-                          "name" : "Station"
-                        },
-                        "id" : 16,
-                        "name" : "Station Services"
-                      },
-                      "id" : 27,
-                      "market_group" : null,
-                      "mass" : null,
-                      "name" : "Office",
-                      "portion_size" : 1,
-                      "volume" : 1
-                    }
-                  },
-                  "material_efficiency" : 0,
-                  "max_production_limit" : 300,
-                  "quantity" : 1,
-                  "runs" : 0,
-                  "time_efficiency" : 0,
-                  "type" : {
-                    "group" : {
-                      "category" : {
-                        "id" : 34,
-                        "name" : "Ancient Relics"
-                      },
-                      "id" : 997,
-                      "name" : "Sleeper Hull Relics"
-                    },
-                    "id" : 34414,
-                    "market_group" : {
-                      "id" : 1909,
-                      "name" : "Ancient Relics",
-                      "parent" : {
-                        "id" : 1872,
-                        "name" : "Research Equipment",
-                        "parent" : {
-                          "id" : 475,
-                          "name" : "Manufacture & Research"
-                        }
-                      }
-                    },
-                    "mass" : null,
-                    "name" : "Small Malfunctioning Hull Section",
-                    "portion_size" : 1,
-                    "volume" : 20
-                  }
+              "type" : "object",
+              "properties" : {
+                "function" : {
+                  "type" : "string"
+                },
+                "item_id" : {
+                  "type" : "integer"
+                },
+                "location_flag" : {
+                  "type" : "string"
+                },
+                "material_efficiency" : {
+                  "type" : "integer"
+                },
+                "max_production_limit" : {
+                  "type" : "integer"
+                },
+                "quantity" : {
+                  "type" : "integer"
+                },
+                "runs" : {
+                  "type" : "integer"
+                },
+                "time_efficiency" : {
+                  "type" : "integer"
+                },
+                "type" : {
+                  "$ref" : "#/components/schemas/Default-Type"
                 }
-              } ]
+              }
             }
           },
           "locations" : {
@@ -1410,72 +913,31 @@
             "items" : {
               "type" : "object",
               "properties" : {
-                "bp_count" : {
-                  "type" : "integer",
-                  "example" : 221
+                "blueprint_count" : {
+                  "type" : "integer"
                 },
                 "location_id" : {
-                  "type" : "integer",
-                  "example" : 1027383972104
+                  "type" : "integer"
                 },
                 "name" : {
-                  "type" : "string",
-                  "example" : "Turrets"
+                  "type" : "string"
                 },
                 "parent" : {
                   "type" : "object",
                   "properties" : {
                     "flag" : {
-                      "type" : "string",
-                      "enum" : [ "CorpSAG1", "CorpSAG2", "CorpSAG3", "CorpSAG4", "CorpSAG5", "CorpSAG6", "CorpSAG7" ],
-                      "example" : "CorpSAG7"
+                      "type" : "string"
                     },
                     "location_id" : {
-                      "type" : "integer",
-                      "example" : 1034503382954
+                      "type" : "integer"
                     },
                     "type" : {
-                      "type" : "string",
-                      "example" : "item"
+                      "type" : "string"
                     }
                   }
                 },
                 "type" : {
-                  "allOf" : [ {
-                    "$ref" : "#/components/schemas/TypeDetails"
-                  }, {
-                    "example" : {
-                      "group" : {
-                        "category" : {
-                          "id" : 2,
-                          "name" : "Celestial"
-                        },
-                        "id" : 448,
-                        "name" : "Audit Log Secure Container"
-                      },
-                      "id" : 17363,
-                      "market_group" : {
-                        "id" : 1652,
-                        "name" : "Audit Log Containers",
-                        "parent" : {
-                          "id" : 379,
-                          "name" : "Cargo Containers",
-                          "parent" : {
-                            "id" : 404,
-                            "name" : "Deployable Structures",
-                            "parent" : {
-                              "id" : 477,
-                              "name" : "Structures"
-                            }
-                          }
-                        }
-                      },
-                      "mass" : 10000,
-                      "name" : "Small Audit Log Secure Container",
-                      "portion_size" : 1,
-                      "volume" : 100
-                    }
-                  } ]
+                  "$ref" : "#/components/schemas/Default-Type"
                 }
               }
             }
@@ -1710,6 +1172,1437 @@
               }
             }
           }
+        }
+      }
+    },
+    "examples" : {
+      "BlueprintItem-Response200" : {
+        "value" : {
+          "data" : {
+            "activities" : [ {
+              "activity_type" : "manufacturing",
+              "materials" : [ {
+                "quantity" : 4,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 21013,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Sensor Cluster",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 9,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 21019,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Capacitor Battery",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 38,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 21027,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Cargo Bay",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 7,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 21035,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Computer System",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 16,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 21037,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Construction Parts",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 7,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 24558,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Ship Maintenance Bay",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 4,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 873,
+                    "name" : "Capital Construction Components"
+                  },
+                  "id" : 24560,
+                  "market_group" : {
+                    "id" : 781,
+                    "name" : "Standard Capital Ship Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 10000,
+                  "name" : "Capital Corporate Hangar Bay",
+                  "portion_size" : 1,
+                  "volume" : 10000
+                }
+              }, {
+                "quantity" : 800,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 334,
+                    "name" : "Construction Components"
+                  },
+                  "id" : 57478,
+                  "market_group" : {
+                    "id" : 2768,
+                    "name" : "Protective Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 0.1,
+                  "name" : "Auto-Integrity Preservation Seal",
+                  "portion_size" : 1,
+                  "volume" : 45
+                }
+              }, {
+                "quantity" : 50,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 334,
+                    "name" : "Construction Components"
+                  },
+                  "id" : 57479,
+                  "market_group" : {
+                    "id" : 2768,
+                    "name" : "Protective Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 0.1,
+                  "name" : "Core Temperature Regulator",
+                  "portion_size" : 1,
+                  "volume" : 1000
+                }
+              }, {
+                "quantity" : 400,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 17,
+                      "name" : "Commodity"
+                    },
+                    "id" : 334,
+                    "name" : "Construction Components"
+                  },
+                  "id" : 57486,
+                  "market_group" : {
+                    "id" : 2768,
+                    "name" : "Protective Components",
+                    "parent" : {
+                      "id" : 1035,
+                      "name" : "Components",
+                      "parent" : {
+                        "id" : 475,
+                        "name" : "Manufacture & Research"
+                      }
+                    }
+                  },
+                  "mass" : 0.1,
+                  "name" : "Life Support Backup Unit",
+                  "portion_size" : 1,
+                  "volume" : 100
+                }
+              } ],
+              "products" : [ {
+                "probability" : 1,
+                "quantity" : 1,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 6,
+                      "name" : "Ship"
+                    },
+                    "id" : 941,
+                    "name" : "Industrial Command Ship"
+                  },
+                  "id" : 28606,
+                  "market_group" : {
+                    "id" : 2336,
+                    "name" : "ORE",
+                    "parent" : {
+                      "id" : 2335,
+                      "name" : "Industrial Command Ships",
+                      "parent" : {
+                        "id" : 1382,
+                        "name" : "Industrial Ships",
+                        "parent" : {
+                          "id" : 4,
+                          "name" : "Ships"
+                        }
+                      }
+                    }
+                  },
+                  "mass" : 150000000,
+                  "name" : "Orca",
+                  "portion_size" : 1,
+                  "volume" : 10250000
+                }
+              } ],
+              "skills" : [ {
+                "level" : 1,
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 16,
+                      "name" : "Skill"
+                    },
+                    "id" : 268,
+                    "name" : "Production"
+                  },
+                  "id" : 22242,
+                  "market_group" : {
+                    "id" : 369,
+                    "name" : "Production",
+                    "parent" : {
+                      "id" : 150,
+                      "name" : "Skills"
+                    }
+                  },
+                  "mass" : null,
+                  "name" : "Capital Ship Construction",
+                  "portion_size" : 1,
+                  "volume" : 0.01
+                }
+              } ],
+              "time" : 1500000
+            } ],
+            "function" : "bpc",
+            "item_id" : 1032906040961,
+            "location" : {
+              "flag" : "CorpSAG7",
+              "location_id" : 1025461508274
+            },
+            "material_efficiency" : 9,
+            "max_production_limit" : 1,
+            "quantity" : 0,
+            "runs" : 1,
+            "station" : {
+              "industry" : {
+                "strEngCostBonus" : 0.95,
+                "strEngMatBonus" : 0.99,
+                "strEngTimeBonus" : 0.7
+              },
+              "name" : "Alentene - IChooseYou Market and Industry",
+              "office" : {
+                "location_id" : 1034503382954,
+                "name" : null,
+                "parent" : {
+                  "flag" : "OfficeFolder",
+                  "location_id" : 1032903563769,
+                  "type" : "item"
+                },
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 3,
+                      "name" : "Station"
+                    },
+                    "id" : 16,
+                    "name" : "Station Services"
+                  },
+                  "id" : 27,
+                  "mass" : null,
+                  "name" : "Office",
+                  "portion_size" : 1,
+                  "volume" : 1
+                }
+              },
+              "owner_id" : 98425418,
+              "station_id" : 1032903563769,
+              "system_id" : 30005304,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 65,
+                    "name" : "Structure"
+                  },
+                  "id" : 1404,
+                  "name" : "Engineering Complex"
+                },
+                "id" : 35827,
+                "market_group" : {
+                  "id" : 2324,
+                  "name" : "Engineering Complexes",
+                  "parent" : {
+                    "id" : 477,
+                    "name" : "Structures"
+                  }
+                },
+                "mass" : 50000000000,
+                "name" : "Sotiyo",
+                "portion_size" : 1,
+                "volume" : 800000
+              }
+            },
+            "time_efficiency" : 16,
+            "type" : {
+              "group" : {
+                "category" : {
+                  "id" : 9,
+                  "name" : "Blueprint"
+                },
+                "id" : 945,
+                "name" : "Industrial Command Ship Blueprint"
+              },
+              "id" : 28607,
+              "market_group" : {
+                "id" : 2334,
+                "name" : "ORE",
+                "parent" : {
+                  "id" : 2333,
+                  "name" : "Industrial Command Ships",
+                  "parent" : {
+                    "id" : 204,
+                    "name" : "Ships",
+                    "parent" : {
+                      "id" : 2,
+                      "name" : "Blueprints & Reactions"
+                    }
+                  }
+                }
+              },
+              "mass" : null,
+              "name" : "Orca Blueprint",
+              "portion_size" : 1,
+              "volume" : 0.01
+            }
+          }
+        }
+      },
+      "BlueprintLocation-Response200" : {
+        "value" : {
+          "data" : {
+            "blueprints" : [ ],
+            "locations" : [ {
+              "blueprint_count" : 2,
+              "industry" : { },
+              "name" : "Alentene V - Moon 4 - Duvolle Laboratories Factory",
+              "office" : {
+                "location_id" : 1036045269940,
+                "name" : null,
+                "parent" : {
+                  "flag" : "OfficeFolder",
+                  "location_id" : 60010873,
+                  "type" : "station"
+                },
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 3,
+                      "name" : "Station"
+                    },
+                    "id" : 16,
+                    "name" : "Station Services"
+                  },
+                  "id" : 27,
+                  "mass" : null,
+                  "name" : "Office",
+                  "portion_size" : 1,
+                  "volume" : 1
+                }
+              },
+              "owner_id" : 1000109,
+              "station_id" : 60010873,
+              "system_id" : 30005304,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 3,
+                    "name" : "Station"
+                  },
+                  "id" : 15,
+                  "name" : "Station"
+                },
+                "id" : 3867,
+                "mass" : null,
+                "name" : "Gallente Industrial Station",
+                "portion_size" : 1,
+                "volume" : 1
+              }
+            }, {
+              "blueprint_count" : 8,
+              "industry" : { },
+              "name" : "Jufvitte - ArcForge1",
+              "office" : {
+                "location_id" : 1036168889894,
+                "name" : null,
+                "parent" : {
+                  "flag" : "OfficeFolder",
+                  "location_id" : 1027052165651,
+                  "type" : "item"
+                },
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 3,
+                      "name" : "Station"
+                    },
+                    "id" : 16,
+                    "name" : "Station Services"
+                  },
+                  "id" : 27,
+                  "mass" : null,
+                  "name" : "Office",
+                  "portion_size" : 1,
+                  "volume" : 1
+                }
+              },
+              "owner_id" : 98528167,
+              "station_id" : 1027052165651,
+              "system_id" : 30005308,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 65,
+                    "name" : "Structure"
+                  },
+                  "id" : 1406,
+                  "name" : "Refinery"
+                },
+                "id" : 35835,
+                "market_group" : {
+                  "id" : 2327,
+                  "name" : "Refineries",
+                  "parent" : {
+                    "id" : 477,
+                    "name" : "Structures"
+                  }
+                },
+                "mass" : 3000000000,
+                "name" : "Athanor",
+                "portion_size" : 1,
+                "volume" : 8000
+              }
+            }, {
+              "blueprint_count" : 3624,
+              "industry" : {
+                "strEngCostBonus" : 0.95,
+                "strEngMatBonus" : 0.99,
+                "strEngTimeBonus" : 0.7
+              },
+              "name" : "Alentene - IChooseYou Market and Industry",
+              "office" : {
+                "location_id" : 1034503382954,
+                "name" : null,
+                "parent" : {
+                  "flag" : "OfficeFolder",
+                  "location_id" : 1032903563769,
+                  "type" : "item"
+                },
+                "type" : {
+                  "group" : {
+                    "category" : {
+                      "id" : 3,
+                      "name" : "Station"
+                    },
+                    "id" : 16,
+                    "name" : "Station Services"
+                  },
+                  "id" : 27,
+                  "mass" : null,
+                  "name" : "Office",
+                  "portion_size" : 1,
+                  "volume" : 1
+                }
+              },
+              "owner_id" : 98425418,
+              "station_id" : 1032903563769,
+              "system_id" : 30005304,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 65,
+                    "name" : "Structure"
+                  },
+                  "id" : 1404,
+                  "name" : "Engineering Complex"
+                },
+                "id" : 35827,
+                "market_group" : {
+                  "id" : 2324,
+                  "name" : "Engineering Complexes",
+                  "parent" : {
+                    "id" : 477,
+                    "name" : "Structures"
+                  }
+                },
+                "mass" : 50000000000,
+                "name" : "Sotiyo",
+                "portion_size" : 1,
+                "volume" : 800000
+              }
+            } ]
+          }
+        }
+      },
+      "BlueprintLocationItem-Response200" : {
+        "value" : {
+          "data" : {
+            "blueprints" : [ {
+              "function" : "relic",
+              "item_id" : 1027375487203,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 11,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 991,
+                  "name" : "Sleeper Offensive Relics"
+                },
+                "id" : 30633,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Wrecked Weapon Subroutines",
+                "portion_size" : 1,
+                "volume" : 10
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1027375487206,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 6,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 993,
+                  "name" : "Sleeper Defensive Relics"
+                },
+                "id" : 30618,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Wrecked Armor Nanobot",
+                "portion_size" : 1,
+                "volume" : 10
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1031368145969,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 6,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 971,
+                  "name" : "Sleeper Propulsion Relics"
+                },
+                "id" : 30562,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Wrecked Thruster Sections",
+                "portion_size" : 1,
+                "volume" : 10
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1031575713203,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 1,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 992,
+                  "name" : "Sleeper Engineering Relics"
+                },
+                "id" : 30588,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Wrecked Power Cores",
+                "portion_size" : 1,
+                "volume" : 10
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1031575738624,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 1,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 997,
+                  "name" : "Sleeper Hull Relics"
+                },
+                "id" : 34416,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Small Wrecked Hull Section",
+                "portion_size" : 1,
+                "volume" : 20
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1031575738631,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 1,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 997,
+                  "name" : "Sleeper Hull Relics"
+                },
+                "id" : 30754,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Wrecked Hull Section",
+                "portion_size" : 1,
+                "volume" : 50
+              }
+            }, {
+              "function" : "relic",
+              "item_id" : 1031575738636,
+              "location" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954
+              },
+              "material_efficiency" : 0,
+              "max_production_limit" : 300,
+              "quantity" : 1,
+              "runs" : 0,
+              "time_efficiency" : 0,
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 34,
+                    "name" : "Ancient Relics"
+                  },
+                  "id" : 997,
+                  "name" : "Sleeper Hull Relics"
+                },
+                "id" : 34414,
+                "market_group" : {
+                  "id" : 1909,
+                  "name" : "Ancient Relics",
+                  "parent" : {
+                    "id" : 1872,
+                    "name" : "Research Equipment",
+                    "parent" : {
+                      "id" : 475,
+                      "name" : "Manufacture & Research"
+                    }
+                  }
+                },
+                "mass" : null,
+                "name" : "Small Malfunctioning Hull Section",
+                "portion_size" : 1,
+                "volume" : 20
+              }
+            } ],
+            "locations" : [ {
+              "blueprint_count" : 713,
+              "location_id" : 1022223537859,
+              "name" : "Equipment",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 509,
+              "location_id" : 1025221299525,
+              "name" : "Charges",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 428,
+              "location_id" : 1025461508274,
+              "name" : "Ships",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 426,
+              "location_id" : 1025461521989,
+              "name" : "Rigs",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 13,
+              "location_id" : 1027332123378,
+              "name" : "Misc",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 262,
+              "location_id" : 1027383972104,
+              "name" : "Turrets",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 234,
+              "location_id" : 1027383993087,
+              "name" : "Drones",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 63,
+              "location_id" : 1027384005908,
+              "name" : "Components",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            }, {
+              "blueprint_count" : 969,
+              "location_id" : 1028874108518,
+              "name" : "- Spares",
+              "parent" : {
+                "flag" : "CorpSAG7",
+                "location_id" : 1034503382954,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 2,
+                    "name" : "Celestial"
+                  },
+                  "id" : 448,
+                  "name" : "Audit Log Secure Container"
+                },
+                "id" : 17363,
+                "market_group" : {
+                  "id" : 1652,
+                  "name" : "Audit Log Containers",
+                  "parent" : {
+                    "id" : 379,
+                    "name" : "Cargo Containers",
+                    "parent" : {
+                      "id" : 404,
+                      "name" : "Deployable Structures",
+                      "parent" : {
+                        "id" : 477,
+                        "name" : "Structures"
+                      }
+                    }
+                  }
+                },
+                "mass" : 10000,
+                "name" : "Small Audit Log Secure Container",
+                "portion_size" : 1,
+                "volume" : 100
+              }
+            } ]
+          }
+        }
+      },
+      "Station-Response200" : {
+        "value" : {
+          "data" : [ {
+            "industry" : { },
+            "name" : "Alentene V - Moon 4 - Duvolle Laboratories Factory",
+            "office" : {
+              "location_id" : 1036045269940,
+              "name" : null,
+              "parent" : {
+                "flag" : "OfficeFolder",
+                "location_id" : 60010873,
+                "type" : "station"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 3,
+                    "name" : "Station"
+                  },
+                  "id" : 16,
+                  "name" : "Station Services"
+                },
+                "id" : 27,
+                "mass" : null,
+                "name" : "Office",
+                "portion_size" : 1,
+                "volume" : 1
+              }
+            },
+            "owner_id" : 1000109,
+            "station_id" : 60010873,
+            "system_id" : 30005304,
+            "type" : {
+              "group" : {
+                "category" : {
+                  "id" : 3,
+                  "name" : "Station"
+                },
+                "id" : 15,
+                "name" : "Station"
+              },
+              "id" : 3867,
+              "mass" : null,
+              "name" : "Gallente Industrial Station",
+              "portion_size" : 1,
+              "volume" : 1
+            }
+          }, {
+            "industry" : { },
+            "name" : "Jufvitte - ArcForge1",
+            "office" : {
+              "location_id" : 1036168889894,
+              "name" : null,
+              "parent" : {
+                "flag" : "OfficeFolder",
+                "location_id" : 1027052165651,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 3,
+                    "name" : "Station"
+                  },
+                  "id" : 16,
+                  "name" : "Station Services"
+                },
+                "id" : 27,
+                "mass" : null,
+                "name" : "Office",
+                "portion_size" : 1,
+                "volume" : 1
+              }
+            },
+            "owner_id" : 98528167,
+            "station_id" : 1027052165651,
+            "system_id" : 30005308,
+            "type" : {
+              "group" : {
+                "category" : {
+                  "id" : 65,
+                  "name" : "Structure"
+                },
+                "id" : 1406,
+                "name" : "Refinery"
+              },
+              "id" : 35835,
+              "market_group" : {
+                "id" : 2327,
+                "name" : "Refineries",
+                "parent" : {
+                  "id" : 477,
+                  "name" : "Structures"
+                }
+              },
+              "mass" : 3000000000,
+              "name" : "Athanor",
+              "portion_size" : 1,
+              "volume" : 8000
+            }
+          }, {
+            "industry" : {
+              "strEngCostBonus" : 0.95,
+              "strEngMatBonus" : 0.99,
+              "strEngTimeBonus" : 0.7
+            },
+            "name" : "Alentene - IChooseYou Market and Industry",
+            "office" : {
+              "location_id" : 1034503382954,
+              "name" : null,
+              "parent" : {
+                "flag" : "OfficeFolder",
+                "location_id" : 1032903563769,
+                "type" : "item"
+              },
+              "type" : {
+                "group" : {
+                  "category" : {
+                    "id" : 3,
+                    "name" : "Station"
+                  },
+                  "id" : 16,
+                  "name" : "Station Services"
+                },
+                "id" : 27,
+                "mass" : null,
+                "name" : "Office",
+                "portion_size" : 1,
+                "volume" : 1
+              }
+            },
+            "owner_id" : 98425418,
+            "station_id" : 1032903563769,
+            "system_id" : 30005304,
+            "type" : {
+              "group" : {
+                "category" : {
+                  "id" : 65,
+                  "name" : "Structure"
+                },
+                "id" : 1404,
+                "name" : "Engineering Complex"
+              },
+              "id" : 35827,
+              "market_group" : {
+                "id" : 2324,
+                "name" : "Engineering Complexes",
+                "parent" : {
+                  "id" : 477,
+                  "name" : "Structures"
+                }
+              },
+              "mass" : 50000000000,
+              "name" : "Sotiyo",
+              "portion_size" : 1,
+              "volume" : 800000
+            }
+          } ]
         }
       }
     }

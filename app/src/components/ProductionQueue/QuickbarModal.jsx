@@ -14,6 +14,7 @@ const QuickbarModal = ({quickbar, setQuickbar}) => <Modal show={quickbar.length 
       as='textarea'
       value={quickbar.join('\n')}
       rows={quickbar.length}
+      readOnly
     />
   </Modal.Body>
 </Modal>;
